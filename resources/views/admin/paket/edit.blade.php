@@ -9,7 +9,7 @@
             <a href="{{ route('admin.paket.index') }}" class="text-sm text-indigo-700 font-semibold">Kembali</a>
         </div>
 
-        <form method="POST" action="{{ route('admin.paket.update', ['paket' => $paketTour->getKey()]) }}" enctype="multipart/form-data" class="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 space-y-4">
+        <form method="POST" action="{{ route('admin.paket.update', $paketTour) }}" enctype="multipart/form-data" class="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 space-y-4">
             @csrf
             @method('PUT')
             <div class="grid md:grid-cols-2 gap-4">

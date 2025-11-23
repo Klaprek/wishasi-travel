@@ -74,7 +74,8 @@ Route::middleware(['auth','role:admin'])
     ->group(function () {
 
         // resource route untuk kelola paket
-        Route::resource('paket', AdminPaketController::class);
+        Route::resource('paket', AdminPaketController::class)
+            ->parameters(['paket' => 'paketTour']);
 
         // hide & show paket
         Route::put('/paket/{paketTour}/hide', [AdminPaketController::class, 'hide'])

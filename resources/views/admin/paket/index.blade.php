@@ -40,15 +40,17 @@
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ route('admin.paket.edit', $item->id) }}" class="px-3 py-2 text-sm font-semibold text-indigo-700 bg-indigo-50 rounded-lg hover:bg-indigo-100">Edit</a>
-                                    <form method="POST" action="{{ $item->tampil_di_katalog ? route('admin.paket.hide', $item->id) : route('admin.paket.visible', $item->id) }}">
+                                    <a href="{{ route('admin.paket.edit', $item) }}" class="px-3 py-2 text-sm font-semibold text-indigo-700 bg-indigo-50 rounded-lg hover:bg-indigo-100">Edit</a>
+                                    <form method="POST" action="{{ $item->tampil_di_katalog ? route('admin.paket.hide', $item) : route('admin.paket.visible', $item) }}">
                                         @csrf
                                         @method('PUT')
                                         <button class="px-3 py-2 text-sm font-semibold {{ $item->tampil_di_katalog ? 'text-amber-700 bg-amber-50' : 'text-emerald-700 bg-emerald-50' }} rounded-lg hover:opacity-90">
                                             {{ $item->tampil_di_katalog ? 'Sembunyikan' : 'Tampilkan' }}
                                         </button>
                                     </form>
-                                    <form method="POST" action="{{ route('admin.paket.destroy', $item->id) }}">
+                                    <form method="POST"
+                                          action="{{ route('admin.paket.destroy', $item) }}"
+                                          onsubmit="return confirm('Yakin ingin menghapus paket ini? Tindakan ini tidak dapat dibatalkan.');">
                                         @csrf
                                         @method('DELETE')
                                         <button class="px-3 py-2 text-sm font-semibold text-red-700 bg-red-50 rounded-lg hover:bg-red-100">Hapus</button>

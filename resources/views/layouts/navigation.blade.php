@@ -2,10 +2,10 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex items-center gap-6">
-                <a href="/" class="flex items-center gap-2 font-semibold text-indigo-700">
+                <div class="flex items-center gap-2 font-semibold text-indigo-700 select-none cursor-default">
                     <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     <span class="hidden sm:inline text-slate-800">{{ config('app.name', 'Tour') }}</span>
-                </a>
+                </div>
                 <div class="hidden sm:flex sm:items-center sm:space-x-6">
                     @if(!auth()->check() || (auth()->check() && auth()->user()->role === 'customer'))
                         <a href="/" class="text-sm font-semibold {{ request()->is('/') ? 'text-indigo-700' : 'text-slate-600 hover:text-indigo-700' }}">Katalog</a>
