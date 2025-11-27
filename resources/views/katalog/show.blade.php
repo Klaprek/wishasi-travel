@@ -96,44 +96,7 @@
                         </div>
                     </div>
 
-                    <div class="border border-slate-200 rounded-xl p-6 space-y-4">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-slate-900">Ulasan Paket</h3>
-                            <span class="text-sm text-slate-500">Berikan pengalamanmu</span>
-                        </div>
-
-                        @auth
-                            @if(auth()->user()->role === 'customer')
-                                <form method="POST" action="{{ route('rating.store', $paketTour->id) }}" class="space-y-3">
-                                    @csrf
-                                    <div class="flex gap-3 items-center">
-                                        <label class="text-sm text-slate-700 font-semibold">Rating</label>
-                                        <select name="nilai_rating" class="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                            @for($i = 1; $i <= 5; $i++)
-                                                <option value="{{ $i }}">{{ $i }} / 5</option>
-                                            @endfor
-                                        </select>
-                                    </div>
-                                    <textarea name="ulasan" rows="3" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Ceritakan pengalamanmu..."></textarea>
-                                    <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700">Kirim Ulasan</button>
-                                </form>
-                            @endif
-                        @endauth
-
-                        <div class="space-y-4">
-                            @forelse($paketTour->ratings as $rating)
-                                <div class="p-4 border border-slate-200 rounded-lg bg-slate-50">
-                                    <div class="flex items-center justify-between">
-                                        <p class="font-semibold text-slate-800">{{ $rating->user->name ?? 'Customer' }}</p>
-                                        <span class="text-indigo-700 font-semibold">{{ $rating->nilai_rating }} / 5</span>
-                                    </div>
-                                    <p class="text-sm text-slate-600 mt-1">{{ $rating->ulasan ?? 'Tanpa ulasan' }}</p>
-                                </div>
-                            @empty
-                                <p class="text-sm text-slate-500">Belum ada ulasan.</p>
-                            @endforelse
-                        </div>
-                    </div>
+                    
                 </div>
 
                 <div class="space-y-4">

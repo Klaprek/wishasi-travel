@@ -9,7 +9,7 @@
             <a href="/pesanan-saya" class="text-sm text-indigo-700 font-semibold">Kembali ke pesanan</a>
         </div>
 
-        <form action="/pesanan/{{ $pesanan->id }}/peserta" method="POST" class="space-y-6">
+        <form action="/pesanan/{{ $pesanan->id }}/peserta" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
             <div class="grid gap-6">
                 @for($i = 0; $i < $pesanan->jumlah_peserta; $i++)
@@ -35,14 +35,20 @@
                                 <label class="text-sm font-semibold text-slate-700">Alamat</label>
                                 <input required name="peserta[{{ $i }}][alamat]" class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500" placeholder="Alamat domisili">
                             </div>
-                            <div>
-                                <label class="text-sm font-semibold text-slate-700">Nomor Identitas</label>
-                                <input name="peserta[{{ $i }}][foto_identitas]" class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500" placeholder="KTP/SIM">
-                            </div>
-                            <div>
-                                <label class="text-sm font-semibold text-slate-700">Nomor Paspor</label>
-                                <input name="peserta[{{ $i }}][paspor]" class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500" placeholder="Opsional jika domestik">
-                            </div>
+                            @if($pesanan->paketTour->wajib_identitas)
+                                <div>
+                                    <label class="text-sm font-semibold text-slate-700">Upload Identitas (KTP/SIM)</label>
+                                    <input type="file" accept="image/*" required name="peserta[{{ $i }}][foto_identitas]" class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500 bg-white">
+                                    <p class="text-xs text-slate-500 mt-1">Format jpg/jpeg/png/webp, maks 2MB.</p>
+                                </div>
+                            @endif
+                            @if($pesanan->paketTour->wajib_paspor)
+                                <div>
+                                    <label class="text-sm font-semibold text-slate-700">Upload Paspor</label>
+                                    <input type="file" accept="image/*" required name="peserta[{{ $i }}][paspor]" class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500 bg-white">
+                                    <p class="text-xs text-slate-500 mt-1">Format jpg/jpeg/png/webp, maks 2MB.</p>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 @endfor

@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\PesertaController as PesertaControllerAdmin;
 
 // Owner controllers
 use App\Http\Controllers\Owner\RekapitulasiController;
+use App\Http\Controllers\Auth\SocialiteController;
 
 // -----------------------------------------------------
 // LANDING PAGE & KATALOG
@@ -25,6 +26,15 @@ use App\Http\Controllers\Owner\RekapitulasiController;
 
 Route::get('/', [PaketTourController::class, 'index']);
 Route::get('/paket/{paketTour}', [PaketTourController::class, 'show']);
+
+// -----------------------------------------------------
+// SOCIAL AUTH (GOOGLE)
+// -----------------------------------------------------
+
+Route::middleware('guest')->group(function () {
+    Route::get('/auth/google/redirect', [SocialiteController::class, 'redirect'])->name('google.redirect');
+    Route::get('/auth/google/callback', [SocialiteController::class, 'callback'])->name('google.callback');
+});
 
 
 // -----------------------------------------------------

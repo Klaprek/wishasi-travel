@@ -45,9 +45,11 @@
                         </x-slot>
 
                         <x-slot name="content">
-                            <x-dropdown-link :href="route('profile.edit')">
-                                {{ __('Profile') }}
-                            </x-dropdown-link>
+                            @if(auth()->user()->role !== 'customer')
+                                <x-dropdown-link :href="route('profile.edit')">
+                                    {{ __('Profile') }}
+                                </x-dropdown-link>
+                            @endif
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
@@ -58,7 +60,6 @@
                     </x-dropdown>
                 @else
                     <a href="/login" class="text-sm font-semibold text-slate-600 hover:text-indigo-700">Login</a>
-                    <a href="/register" class="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700">Daftar</a>
                 @endauth
             </div>
 
@@ -110,9 +111,11 @@
                     <div class="font-medium text-sm text-gray-500">{{ auth()->user()->email }}</div>
                 </div>
                 <div class="mt-3 space-y-1">
-                    <x-responsive-nav-link :href="route('profile.edit')">
-                        {{ __('Profile') }}
-                    </x-responsive-nav-link>
+                    @if(auth()->user()->role !== 'customer')
+                        <x-responsive-nav-link :href="route('profile.edit')">
+                            {{ __('Profile') }}
+                        </x-responsive-nav-link>
+                    @endif
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
@@ -123,7 +126,6 @@
             @else
                 <div class="px-4 space-y-2">
                     <a href="/login" class="block text-sm font-semibold text-slate-700">Login</a>
-                    <a href="/register" class="block text-sm font-semibold text-indigo-700">Daftar</a>
                 </div>
             @endauth
         </div>

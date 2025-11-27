@@ -55,9 +55,23 @@
                                 <p class="text-sm text-slate-700">{{ $peserta->email }}</p>
                                 <p class="text-sm text-slate-500">{{ $peserta->telepon }}</p>
                             </td>
-                            <td class="px-6 py-4 text-sm text-slate-700">
-                                <p>ID: {{ $peserta->foto_identitas ?? '-' }}</p>
-                                <p>Paspor: {{ $peserta->paspor ?? '-' }}</p>
+                            <td class="px-6 py-4 text-sm text-slate-700 space-y-2">
+                                <div>
+                                    <p class="font-semibold">Identitas:</p>
+                                    @if($peserta->foto_identitas)
+                                        <a href="{{ asset('storage/'.$peserta->foto_identitas) }}" target="_blank" class="text-indigo-700 hover:underline">Lihat file</a>
+                                    @else
+                                        <span class="text-slate-500">-</span>
+                                    @endif
+                                </div>
+                                <div>
+                                    <p class="font-semibold">Paspor:</p>
+                                    @if($peserta->paspor)
+                                        <a href="{{ asset('storage/'.$peserta->paspor) }}" target="_blank" class="text-indigo-700 hover:underline">Lihat file</a>
+                                    @else
+                                        <span class="text-slate-500">-</span>
+                                    @endif
+                                </div>
                             </td>
                             <td class="px-6 py-4">
                                 <span class="px-3 py-1 rounded-full text-xs font-semibold
