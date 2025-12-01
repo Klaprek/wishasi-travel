@@ -8,16 +8,26 @@ use Illuminate\Http\Request;
 
 class PesananController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // show all pesanan by group paket
-        $pesanan = Pesanan::with('paketTour', 'user')->latest()->get();
-        return view('admin.pesanan.index', compact('pesanan'));
+        $pesanan = Pesanan::with('paketTour', 'user', 'pesertas')->latest()->get();
+
+        if ($request->expectsJson()) {
+            return response()->json(['data' => $pesanan]);
+        }
+
+        return view('app');
     }
 
-    public function show(Pesanan $pesanan)
+    public function show(Request $request, Pesanan $pesanan)
     {
         $pesanan->load('pesertas');
-        return view('admin.pesanan.show', compact('pesanan'));
+
+        if ($request->expectsJson()) {
+            return response()->json(['data' => $pesanan]);
+        }
+
+        return view('app');
     }
 }

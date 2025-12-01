@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Public controllers
@@ -19,6 +20,7 @@ use App\Http\Controllers\Admin\PesertaController as PesertaControllerAdmin;
 // Owner controllers
 use App\Http\Controllers\Owner\RekapitulasiController;
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\PaymentController;
 
 // -----------------------------------------------------
 // LANDING PAGE & KATALOG
@@ -26,6 +28,8 @@ use App\Http\Controllers\Auth\SocialiteController;
 
 Route::get('/', [PaketTourController::class, 'index']);
 Route::get('/paket/{paketTour}', [PaketTourController::class, 'show']);
+Route::get('/api/paket', [PaketTourController::class, 'index']);
+Route::get('/api/paket/{paketTour}', [PaketTourController::class, 'show']);
 
 // -----------------------------------------------------
 // SOCIAL AUTH (GOOGLE)
@@ -42,7 +46,7 @@ Route::middleware('guest')->group(function () {
 // -----------------------------------------------------
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('app');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 
@@ -51,6 +55,10 @@ Route::get('/dashboard', function () {
 // -----------------------------------------------------
 
 Route::middleware('auth')->group(function () {
+    Route::get('/api/me', function (Request $request) {
+        return response()->json(['data' => $request->user()]);
+    });
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -71,6 +79,9 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
 
     Route::post('/paket/{paketTour}/rating', [RatingController::class, 'store'])
         ->name('rating.store');
+
+    Route::post('/payments/{pesanan}/snap-token', [PaymentController::class, 'createSnapToken']);
+    Route::post('/payments/{pesanan}/confirm', [PaymentController::class, 'confirm']);
 });
 
 
@@ -115,3 +126,7 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/{any}', function () {
+    return view('app');
+})->where('any', '.*');

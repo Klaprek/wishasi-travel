@@ -10,9 +10,15 @@ use Illuminate\Validation\Rule;
 
 class PesertaController extends Controller
 {
-    public function create(Pesanan $pesanan)
+    public function create(Request $request, Pesanan $pesanan)
     {
-        return view('customer.peserta.create', compact('pesanan'));
+        $pesanan->load('paketTour', 'pesertas');
+
+        if ($request->expectsJson()) {
+            return response()->json(['data' => $pesanan]);
+        }
+
+        return view('app');
     }
 
     public function store(Request $request, Pesanan $pesanan)
@@ -66,6 +72,13 @@ class PesertaController extends Controller
         }
 
         $pesanan->update(['status_pesanan' => 'menunggu_verifikasi']);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Data peserta disimpan',
+                'data' => $pesanan->fresh('pesertas'),
+            ]);
+        }
 
         return redirect('/pesanan-saya')->with('success', 'Data peserta berhasil disimpan');
     }

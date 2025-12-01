@@ -26,6 +26,14 @@ class PesertaController extends Controller
             ]);
         }
 
+        if (request()->expectsJson()) {
+            return response()->json([
+                'message' => 'Peserta berhasil diverifikasi',
+                'data' => $peserta->fresh(),
+                'pesanan' => $pesanan->fresh('pesertas'),
+            ]);
+        }
+
         return back()->with('success', 'Peserta berhasil diverifikasi');
     }
 
@@ -36,6 +44,13 @@ class PesertaController extends Controller
         ]);
 
         // status pesanan tetap menunggu verifikasi
+        if (request()->expectsJson()) {
+            return response()->json([
+                'message' => 'Peserta ditolak. Customer diminta upload ulang.',
+                'data' => $peserta->fresh(),
+            ], 422);
+        }
+
         return back()->with('error', 'Peserta ditolak. Customer diminta upload ulang.');
     }
 }

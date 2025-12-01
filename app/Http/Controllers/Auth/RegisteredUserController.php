@@ -17,9 +17,13 @@ class RegisteredUserController extends Controller
     /**
      * Display the registration view.
      */
-    public function create(): View
+    public function create(Request $request)
     {
-        return view('auth.register');
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'ok']);
+        }
+
+        return view('app');
     }
 
     /**
@@ -27,7 +31,7 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -44,6 +48,13 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Registrasi berhasil',
+                'user' => $user,
+            ], 201);
+        }
 
         return redirect(route('dashboard', absolute: false));
     }

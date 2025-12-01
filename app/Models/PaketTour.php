@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class PaketTour extends Model
 {
@@ -28,6 +29,10 @@ class PaketTour extends Model
         'harga_per_peserta' => 'decimal:2',
     ];
 
+    protected $appends = [
+        'banner_url',
+    ];
+
     public function pesanans()
     {
         return $this->hasMany(Pesanan::class, 'paket_id');
@@ -36,5 +41,10 @@ class PaketTour extends Model
     public function ratings()
     {
         return $this->hasMany(Rating::class, 'paket_id');
+    }
+
+    public function getBannerUrlAttribute(): ?string
+    {
+        return $this->banner ? Storage::url($this->banner) : null;
     }
 }

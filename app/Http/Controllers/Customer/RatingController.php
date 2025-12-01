@@ -27,6 +27,13 @@ class RatingController extends Controller
             ]
         );
 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Terima kasih atas ulasan Anda!',
+                'data' => $rating,
+            ]);
+        }
+
         return back()->with('success', 'Terima kasih atas ulasan Anda!');
     }
 }

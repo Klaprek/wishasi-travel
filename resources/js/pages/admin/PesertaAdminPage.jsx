@@ -1,0 +1,92 @@
+import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import api from '../../lib/api';
+import useFetch from '../../hooks/useFetch';
+
+export default function PesertaAdminPage() {
+    const { id } = useParams();
+    const { data: pesanan, loading, error, refetch } = useFetch(`/admin/pesanan/${id}`);
+    const [processing, setProcessing] = useState(false);
+
+    const updateStatus = async (pesertaId, action) => {
+        setProcessing(true);
+        try {
+            await api.put(`/admin/peserta/${pesertaId}/${action}`);
+            refetch();
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setProcessing(false);
+        }
+    };
+
+    if (loading) return <p className="text-slate-600">Memuat peserta...</p>;
+    if (error) return <p className="text-red-600">Gagal memuat data</p>;
+
+    return (
+        <div className="space-y-6">
+            <div>
+                <p className="text-sm uppercase tracking-[0.2em] text-indigo-600 font-semibold">Halaman Data Peserta</p>
+                <h1 className="text-3xl font-bold text-slate-900">Pesanan #{pesanan?.id}</h1>
+                <p className="text-slate-600">Verifikasi identitas peserta.</p>
+            </div>
+
+            <div className="bg-white border border-slate-200 rounded-2xl shadow overflow-hidden">
+                <table className="min-w-full divide-y divide-slate-200">
+                    <thead className="bg-slate-50 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                        <tr>
+                            <th className="px-6 py-3">Peserta</th>
+                            <th className="px-6 py-3">Kontak</th>
+                            <th className="px-6 py-3">Status</th>
+                            <th className="px-6 py-3 text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                        {(pesanan?.pesertas ?? []).map((p) => (
+                            <tr key={p.id} className="hover:bg-slate-50/80">
+                                <td className="px-6 py-4">
+                                    <p className="font-semibold text-slate-900">{p.nama_lengkap}</p>
+                                    <p className="text-sm text-slate-500">{p.alamat}</p>
+                                </td>
+                                <td className="px-6 py-4 text-sm text-slate-700">
+                                    <div>{p.email}</div>
+                                    <div>{p.telepon}</div>
+                                </td>
+                                <td className="px-6 py-4">
+                                    <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold">
+                                        {p.status_verifikasi}
+                                    </span>
+                                </td>
+                                <td className="px-6 py-4 text-right">
+                                    <div className="flex items-center justify-end gap-2">
+                                        <button
+                                            onClick={() => updateStatus(p.id, 'verify')}
+                                            disabled={processing}
+                                            className="px-3 py-2 text-sm font-semibold text-emerald-700 bg-emerald-50 rounded-lg hover:bg-emerald-100"
+                                        >
+                                            Verifikasi
+                                        </button>
+                                        <button
+                                            onClick={() => updateStatus(p.id, 'reject')}
+                                            disabled={processing}
+                                            className="px-3 py-2 text-sm font-semibold text-red-700 bg-red-50 rounded-lg hover:bg-red-100"
+                                        >
+                                            Tolak
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                        {(pesanan?.pesertas ?? []).length === 0 && (
+                            <tr>
+                                <td className="px-6 py-6 text-center text-slate-500" colSpan={4}>
+                                    Belum ada peserta.
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
+}

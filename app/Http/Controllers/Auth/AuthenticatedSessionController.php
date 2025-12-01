@@ -14,21 +14,32 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): View
+    public function create(Request $request)
     {
-        return view('auth.login');
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'ok']);
+        }
+
+        return view('app');
     }
 
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request)
     {
         $request->authenticate();
 
         $request->session()->regenerate();
 
         $user = $request->user();
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Login berhasil',
+                'user' => $user,
+            ]);
+        }
 
         if ($user && $user->role === 'admin') {
             return redirect()->intended(route('admin.paket.index', absolute: false));
@@ -44,13 +55,17 @@ class AuthenticatedSessionController extends Controller
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request)
     {
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Logout berhasil']);
+        }
 
         return redirect('/');
     }

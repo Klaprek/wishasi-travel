@@ -8,13 +8,17 @@ use Illuminate\Http\Request;
 
 class RekapitulasiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $rekap = Pesanan::selectRaw('paket_id, COUNT(*) as total')
             ->groupBy('paket_id')
             ->with('paketTour')
             ->get();
 
-        return view('owner.rekapitulasi.index', compact('rekap'));
+        if ($request->expectsJson()) {
+            return response()->json(['data' => $rekap]);
+        }
+
+        return view('app');
     }
 }

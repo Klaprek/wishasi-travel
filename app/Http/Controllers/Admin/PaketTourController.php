@@ -8,15 +8,24 @@ use Illuminate\Http\Request;
 
 class PaketTourController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $paket = PaketTour::all();
-        return view('admin.paket.index', compact('paket'));
+
+        if ($request->expectsJson()) {
+            return response()->json(['data' => $paket]);
+        }
+
+        return view('app');
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('admin.paket.create');
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'ok']);
+        }
+
+        return view('app');
     }
 
     public function store(Request $request)
@@ -30,9 +39,9 @@ class PaketTourController extends Controller
             'jadwal_keberangkatan' => 'required|date',
             'kuota' => 'required|integer|min:1',
             'durasi' => 'required|integer|min:1',
-            'wajib_paspor' => 'boolean',
-            'wajib_identitas' => 'boolean',
-            'tampil_di_katalog' => 'boolean',
+            'wajib_paspor' => 'nullable|in:on,off,1,0,true,false',
+            'wajib_identitas' => 'nullable|in:on,off,1,0,true,false',
+            'tampil_di_katalog' => 'nullable|in:on,off,1,0,true,false',
         ]);
 
         $data = $request->only([
@@ -50,14 +59,25 @@ class PaketTourController extends Controller
         $data['tampil_di_katalog'] = $request->boolean('tampil_di_katalog');
         $data['banner'] = $request->file('banner')->store('banners', 'public');
 
-        PaketTour::create($data);
+        $paket = PaketTour::create($data);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Paket berhasil dibuat',
+                'data' => $paket,
+            ], 201);
+        }
 
         return redirect()->route('admin.paket.index');
     }
 
-    public function edit(PaketTour $paketTour)
+    public function edit(Request $request, PaketTour $paketTour)
     {
-        return view('admin.paket.edit', compact('paketTour'));
+        if ($request->expectsJson()) {
+            return response()->json(['data' => $paketTour]);
+        }
+
+        return view('app');
     }
 
     public function update(Request $request, PaketTour $paketTour)
@@ -71,9 +91,9 @@ class PaketTourController extends Controller
             'jadwal_keberangkatan' => 'required|date',
             'kuota' => 'required|integer|min:1',
             'durasi' => 'required|integer|min:1',
-            'wajib_paspor' => 'boolean',
-            'wajib_identitas' => 'boolean',
-            'tampil_di_katalog' => 'boolean',
+            'wajib_paspor' => 'nullable|in:on,off,1,0,true,false',
+            'wajib_identitas' => 'nullable|in:on,off,1,0,true,false',
+            'tampil_di_katalog' => 'nullable|in:on,off,1,0,true,false',
         ]);
 
         $data = $request->only([
@@ -95,24 +115,47 @@ class PaketTourController extends Controller
         }
 
         $paketTour->update($data);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Paket diperbarui',
+                'data' => $paketTour,
+            ]);
+        }
+
         return redirect()->route('admin.paket.index');
     }
 
     public function destroy(PaketTour $paketTour)
     {
         $paketTour->delete();
+
+        if (request()->expectsJson()) {
+            return response()->json(['message' => 'Paket dihapus']);
+        }
+
         return redirect()->route('admin.paket.index');
     }
 
     public function hide(PaketTour $paketTour)
     {
         $paketTour->update(['tampil_di_katalog' => false]);
+
+        if (request()->expectsJson()) {
+            return response()->json(['message' => 'Paket disembunyikan', 'data' => $paketTour]);
+        }
+
         return back();
     }
 
     public function showPaket(PaketTour $paketTour)
     {
         $paketTour->update(['tampil_di_katalog' => true]);
+
+        if (request()->expectsJson()) {
+            return response()->json(['message' => 'Paket ditampilkan', 'data' => $paketTour]);
+        }
+
         return back();
     }
 }

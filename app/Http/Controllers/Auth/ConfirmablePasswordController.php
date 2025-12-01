@@ -14,15 +14,19 @@ class ConfirmablePasswordController extends Controller
     /**
      * Show the confirm password view.
      */
-    public function show(): View
+    public function show(Request $request)
     {
-        return view('auth.confirm-password');
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'ok']);
+        }
+
+        return view('app');
     }
 
     /**
      * Confirm the user's password.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         if (! Auth::guard('web')->validate([
             'email' => $request->user()->email,
@@ -34,6 +38,10 @@ class ConfirmablePasswordController extends Controller
         }
 
         $request->session()->put('auth.password_confirmed_at', time());
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Konfirmasi password berhasil']);
+        }
 
         return redirect()->intended(route('dashboard', absolute: false));
     }

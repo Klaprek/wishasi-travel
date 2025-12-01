@@ -13,9 +13,13 @@ class PasswordResetLinkController extends Controller
     /**
      * Display the password reset link request view.
      */
-    public function create(): View
+    public function create(Request $request)
     {
-        return view('auth.forgot-password');
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'ok']);
+        }
+
+        return view('app');
     }
 
     /**
@@ -23,7 +27,7 @@ class PasswordResetLinkController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $request->validate([
             'email' => ['required', 'email'],
@@ -35,6 +39,17 @@ class PasswordResetLinkController extends Controller
         $status = Password::sendResetLink(
             $request->only('email')
         );
+
+        if ($request->expectsJson()) {
+            if ($status == Password::RESET_LINK_SENT) {
+                return response()->json(['message' => __($status)]);
+            }
+
+            return response()->json([
+                'message' => 'Gagal mengirim tautan reset',
+                'errors' => ['email' => [__($status)]],
+            ], 422);
+        }
 
         return $status == Password::RESET_LINK_SENT
                     ? back()->with('status', __($status))
