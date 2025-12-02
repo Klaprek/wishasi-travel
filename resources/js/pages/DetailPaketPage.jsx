@@ -12,71 +12,120 @@ const DetailPaketPage = () => {
     if (!paket) return null;
 
     const banner = paket.banner_url || (paket.banner ? `/storage/${paket.banner}` : null);
+    const destinasiList = (paket.destinasi || '')
+        .split(',')
+        .map((d) => d.trim())
+        .filter(Boolean);
+    const includeList = (paket.include || '')
+        .split(/\r?\n/)
+        .map((d) => d.trim())
+        .filter(Boolean);
 
     return (
-        <div className="space-y-8">
-            <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-white border border-slate-200 rounded-3xl shadow overflow-hidden">
-                    <div
-                        className="h-72 bg-gradient-to-br from-indigo-100 to-indigo-200"
-                        style={banner ? { backgroundImage: `url(${banner})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
-                    />
-                    <div className="p-6 space-y-3">
-                        <h1 className="text-3xl font-bold text-slate-900">{paket.nama_paket}</h1>
-                        <p className="text-slate-600">{paket.destinasi}</p>
-                        <div className="flex flex-wrap gap-2 text-xs text-slate-600">
-                            <span className="px-3 py-1 rounded-full bg-slate-50 border border-slate-200">
-                                Jadwal: {formatTanggalIndo(paket.jadwal_keberangkatan)}
-                            </span>
-                            <span className="px-3 py-1 rounded-full bg-slate-50 border border-slate-200">
-                                Durasi: {paket.durasi ? `${paket.durasi} hari` : '-'}
-                            </span>
-                            <span className="px-3 py-1 rounded-full bg-slate-50 border border-slate-200">
-                                Kuota: {paket.kuota ?? '-'}
-                            </span>
-                            {paket.wajib_identitas && (
-                                <span className="px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700">Wajib identitas</span>
-                            )}
-                            {paket.wajib_paspor && (
-                                <span className="px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700">Wajib paspor</span>
-                            )}
+        <div className="space-y-6">
+            <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
+                <div
+                    className="h-60 md:h-72 bg-slate-100"
+                    style={
+                        banner
+                            ? {
+                                  backgroundImage: `url(${banner})`,
+                                  backgroundSize: 'cover',
+                                  backgroundPosition: 'center',
+                              }
+                            : {}
+                    }
+                >
+                    {banner ? null : <div className="w-full h-full bg-gradient-to-br from-indigo-100 to-indigo-200" />}
+                </div>
+                <div className="p-6 md:p-8 space-y-4">
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                        <div className="space-y-1">
+                            <p className="text-xs font-semibold tracking-[0.2em] text-indigo-600 uppercase">Paket Tour</p>
+                            <h1 className="text-3xl font-bold text-slate-900">{paket.nama_paket}</h1>
+                            <p className="text-slate-600">{paket.destinasi}</p>
                         </div>
-                        <div className="flex items-center justify-between pt-2">
-                            <div>
-                                <p className="text-sm text-slate-500">Harga per peserta</p>
-                                <p className="text-2xl font-bold text-indigo-700">
-                                    Rp {Number(paket.harga_per_peserta ?? 0).toLocaleString('id-ID')}
-                                </p>
-                            </div>
-                            <div className="flex gap-2">
-                                <Link
-                                    to={`/paket/${paket.id}/pesan`}
-                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700"
-                                >
-                                    Pesan Sekarang
-                                </Link>
-                                <Link
-                                    to={`/paket/${paket.id}/rating`}
-                                    className="px-4 py-2 border border-indigo-200 text-indigo-700 rounded-lg font-semibold hover:bg-indigo-50"
-                                >
-                                    Beri Rating
-                                </Link>
-                            </div>
+                        <div className="text-right">
+                            <p className="text-xs text-slate-500">Mulai dari</p>
+                            <p className="text-2xl md:text-3xl font-bold text-indigo-700">
+                                Rp {Number(paket.harga_per_peserta ?? 0).toLocaleString('id-ID')}
+                            </p>
+                            <p className="text-xs text-slate-500">per peserta</p>
                         </div>
                     </div>
-                </div>
-                <div className="space-y-4">
-                    <div className="bg-white border border-slate-200 rounded-3xl shadow p-6 space-y-3">
-                        <h2 className="text-xl font-semibold text-slate-900">Rangkuman</h2>
-                        <ul className="text-sm text-slate-600 space-y-2 list-disc list-inside">
-                            <li>Pembayaran via Midtrans Snap, aman dan cepat.</li>
-                            <li>Isi data peserta setelah pemesanan untuk verifikasi.</li>
-                            <li>Hubungi admin jika membutuhkan penyesuaian jadwal.</li>
+
+                    <div className="grid gap-3 md:grid-cols-3">
+                        <div className="border border-slate-200 rounded-2xl px-4 py-3 bg-slate-50">
+                            <p className="text-xs uppercase tracking-wide text-slate-500">Jadwal</p>
+                            <p className="text-lg font-semibold text-slate-900">{formatTanggalIndo(paket.jadwal_keberangkatan)}</p>
+                        </div>
+                        <div className="border border-slate-200 rounded-2xl px-4 py-3 bg-slate-50">
+                            <p className="text-xs uppercase tracking-wide text-slate-500">Durasi</p>
+                            <p className="text-lg font-semibold text-slate-900">{paket.durasi ? `${paket.durasi} hari` : '-'}</p>
+                        </div>
+                        <div className="border border-slate-200 rounded-2xl px-4 py-3 bg-slate-50">
+                            <p className="text-xs uppercase tracking-wide text-slate-500">Kuota</p>
+                            <p className="text-lg font-semibold text-slate-900">{paket.kuota ?? '-'} peserta</p>
+                        </div>
+                    </div>
+
+                    <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-lg font-semibold text-slate-900">Destinasi & Itinerary</h2>
+                            <span className="text-xs px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 font-semibold">Open Trip</span>
+                        </div>
+                        <ul className="space-y-2 text-slate-700">
+                            {destinasiList.length > 0 ? (
+                                destinasiList.map((d, idx) => (
+                                    <li key={idx} className="flex items-center gap-2">
+                                        <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                                        <span>{d}</span>
+                                    </li>
+                                ))
+                            ) : (
+                                <li className="text-sm text-slate-500">Belum ada destinasi terdaftar.</li>
+                            )}
                         </ul>
                     </div>
-                    <div className="bg-white border border-slate-200 rounded-3xl shadow p-6 space-y-3">
-                        <h2 className="text-xl font-semibold text-slate-900">Include</h2>
-                        <p className="text-sm text-slate-600 whitespace-pre-line">{paket.include}</p>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                        <div className="border border-slate-200 rounded-2xl p-5 space-y-3 bg-white">
+                            <h3 className="text-lg font-semibold text-slate-900">Persyaratan</h3>
+                            <ul className="space-y-2 text-slate-700">
+                                <li className="flex items-center gap-2">
+                                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                                    <span>Identitas: {paket.wajib_identitas ? 'Wajib' : 'Opsional'}</span>
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                                    <span>Paspor: {paket.wajib_paspor ? 'Wajib' : 'Opsional'}</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div className="border border-slate-200 rounded-2xl p-5 space-y-3 bg-white">
+                            <h3 className="text-lg font-semibold text-slate-900">Include</h3>
+                            <ul className="space-y-2 text-slate-700">
+                                {includeList.length > 0 ? (
+                                    includeList.map((item, idx) => (
+                                        <li key={idx} className="flex items-center gap-2">
+                                            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                                            <span>{item}</span>
+                                        </li>
+                                    ))
+                                ) : (
+                                    <li className="text-sm text-slate-500">Belum ada daftar include.</li>
+                                )}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-3 pt-2">
+                        <Link
+                            to={`/paket/${paket.id}/pesan`}
+                            className="px-5 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700"
+                        >
+                            Pesan Sekarang
+                        </Link>
                     </div>
                 </div>
             </div>
