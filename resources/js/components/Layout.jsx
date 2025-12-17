@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../providers/AuthProvider';
 
 function NavItem({ to, label, end = false }) {
@@ -39,7 +39,9 @@ export default function Layout() {
     const isAdminOrOwner = isAdmin || isOwner;
     const isCustomer = user?.role === 'customer';
     const location = useLocation();
+    const navigate = useNavigate();
     const isLoginPage = location.pathname === '/login';
+    const isHomeActive = location.pathname === '/' && (!location.hash || location.hash === '#hero-section');
     const [openUserMenu, setOpenUserMenu] = useState(false);
     const userMenuRef = useRef(null);
 
@@ -57,15 +59,17 @@ export default function Layout() {
         }
     };
 
+    const handleHomeClick = (e) => {
+        e.preventDefault();
+        navigate('/#hero-section');
+        requestAnimationFrame(() => scrollToSection('hero-section'));
+    };
+
     const handleAnchorClick = (e, hash) => {
-        if (location.pathname === '/') {
-            e.preventDefault();
-            const targetHash = `#${hash}`;
-            if (window.location.hash !== targetHash) {
-                window.history.pushState(null, '', targetHash);
-            }
-            scrollToSection(hash);
-        }
+        e.preventDefault();
+        const target = `/#${hash}`;
+        navigate(target);
+        requestAnimationFrame(() => scrollToSection(hash));
     };
 
     useEffect(() => {
@@ -93,7 +97,7 @@ export default function Layout() {
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
             <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-6">
-                    <Link to="/" className="flex items-center gap-3">
+                    <Link to="/#hero-section" onClick={handleHomeClick} className="flex items-center gap-3">
                         <img src="/images/logo.png" alt="Wishasi" className="h-12 w-12 object-contain" />
                         <div className="leading-tight">
                             <p className="text-xl font-bold text-purple-900">Wishasi</p>
@@ -105,7 +109,12 @@ export default function Layout() {
                         <nav className="flex flex-wrap items-center justify-center gap-4 md:gap-6 lg:gap-8">
                             {!isAdminOrOwner && (
                                 <>
-                                    <NavItem to="/" label="Home" end />
+                                    <AnchorNavItem
+                                        hash="hero-section"
+                                        label="Home"
+                                        isActive={isHomeActive}
+                                        onClick={handleHomeClick}
+                                    />
                                     {customerAnchorLinks.map((link) => (
                                     <AnchorNavItem
                                         key={link.hash}
