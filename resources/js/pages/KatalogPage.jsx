@@ -91,10 +91,10 @@ const KatalogPage = () => {
 
             <section id="paket-section" className="space-y-8">
                 <div className="text-center space-y-3">
-                    <h2 className="text-3xl sm:text-4xl font-bold text-slate-900">
+                    <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-8">
                         Katalog
                     </h2>
-                    <p className="text-sm sm:text-base text-slate-600 max-w-3xl mx-auto leading-relaxed">
+                    <p className="text-sm sm:text-base text-slate-600 max-w-3xl mx-auto leading-relaxed mb-16">
                         Jelajahi beragam destinasi menakjubkan di seluruh dunia
                         dan rasakan pesona setiap musim yang memikat di setiap
                         langkah perjalanan Anda yang tak terlupakan dengan
@@ -317,87 +317,34 @@ const KatalogPage = () => {
                 )}
             </section>
 
-            <section id="rating-section" className="space-y-8">
-                <div className="text-center space-y-3">
-                    <h2 className="text-3xl sm:text-4xl font-bold text-slate-900">
-                        Rating
-                    </h2>
-                    <p className="text-sm sm:text-base text-slate-600 max-w-3xl mx-auto leading-relaxed">
-                        Dengarkan pengalaman para traveler setelah menjelajah
-                        bersama Wishasi Tour and Travel.
-                    </p>
-                </div>
-
+            <section id="rating-section" className="space-y-3">
                 <div className="grid lg:grid-cols-2 gap-6 items-stretch">
-                    <div className="bg-white border border-slate-100 rounded-3xl shadow-lg p-6 sm:p-8 flex flex-col justify-between">
-                        <div className="flex items-center justify-between gap-3">
-                            <div>
-                                <p className="text-sm text-purple-700 font-semibold">
-                                    Rating
-                                </p>
-                                <p className="text-2xl font-bold text-slate-900">
-                                    Suara Pelanggan
-                                </p>
-                            </div>
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={() => moveRating(-1)}
-                                    className="h-10 w-10 rounded-full border border-slate-200 text-slate-700 hover:border-purple-200 hover:text-purple-700 transition"
-                                    aria-label="Sebelumnya"
-                                >
-                                    <span aria-hidden>&lt;</span>
-                                </button>
-                                <button
-                                    onClick={() => moveRating(1)}
-                                    className="h-10 w-10 rounded-full border border-slate-200 text-slate-700 hover:border-purple-200 hover:text-purple-700 transition"
-                                    aria-label="Berikutnya"
-                                >
-                                    <span aria-hidden>&gt;</span>
-                                </button>
-                            </div>
+                    <div className="flex flex-col gap-4">
+                        <div className="space-y-1">
+                            <p className="text-2xl sm:text-3xl font-semibold text-purple-700 mb-4 italic">Rating</p>
+                            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">Trusted By Our Customers</h2>
                         </div>
 
-                        {loadingRatings && (
-                            <p className="text-slate-600 mt-6">
-                                Memuat rating...
-                            </p>
-                        )}
-                        {errorRatings && (
-                            <p className="text-red-600 mt-6 text-sm">
-                                Gagal memuat rating. Coba lagi nanti.
-                            </p>
-                        )}
+                        {loadingRatings && <p className="text-slate-600">Memuat rating...</p>}
+                        {errorRatings && <p className="text-red-600 text-sm">Gagal memuat rating. Coba lagi nanti.</p>}
 
                         {currentRating && (
-                            <div className="mt-6 space-y-4">
+                            <div className="bg-white border border-slate-200 rounded-3xl shadow-sm p-6 sm:p-8 space-y-4">
                                 <p className="text-lg font-semibold text-slate-900">
                                     {currentRating.user?.name ?? "Traveler"}
                                 </p>
-                                <p className="text-sm text-slate-600 leading-relaxed">
-                                    "
-                                    {currentRating.ulasan ||
-                                        "Tanpa ulasan tertulis"}
-                                    "
+                                <p className="text-sm text-slate-700 leading-relaxed italic">
+                                    “{currentRating.ulasan || "Tanpa ulasan tertulis"}”
                                 </p>
                                 <div className="flex items-center gap-2 text-amber-500">
                                     {Array.from({ length: 5 }).map((_, idx) => {
-                                        const filled =
-                                            idx + 1 <=
-                                            Math.round(
-                                                Number(
-                                                    currentRating.nilai_rating
-                                                ) || 0
-                                            );
+                                        const filled = idx + 1 <= Math.round(Number(currentRating.nilai_rating) || 0);
                                         return (
                                             <svg
                                                 key={idx}
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 24 24"
-                                                fill={
-                                                    filled
-                                                        ? "currentColor"
-                                                        : "none"
-                                                }
+                                                fill={filled ? "currentColor" : "none"}
                                                 stroke="currentColor"
                                                 strokeWidth="1.4"
                                                 className="h-5 w-5"
@@ -410,118 +357,162 @@ const KatalogPage = () => {
                                             </svg>
                                         );
                                     })}
-                                    <span className="text-sm text-slate-600 ml-2">
-                                        {currentRating.nilai_rating}/5 -{" "}
-                                        {currentRating.paket?.nama_paket ??
-                                            "Paket"}
-                                    </span>
                                 </div>
                             </div>
                         )}
 
                         {!loadingRatings && !currentRating && (
-                            <p className="text-slate-600 mt-6 text-sm">
-                                Belum ada rating yang ditampilkan.
-                            </p>
+                            <p className="text-slate-600 text-sm">Belum ada rating yang ditampilkan.</p>
                         )}
 
-                        {totalRatings > 1 && (
-                            <div className="mt-6 flex items-center gap-2">
-                                {ratings.map((rating, idx) => {
-                                    const isActive =
-                                        idx ===
-                                        (activeRatingIndex + totalRatings) %
-                                            totalRatings;
-                                    return (
-                                        <button
-                                            key={rating.id ?? idx}
-                                            onClick={() =>
-                                                setActiveRatingIndex(idx)
-                                            }
-                                            className={`h-2.5 rounded-full transition ${
-                                                isActive
-                                                    ? "w-6 bg-purple-700"
-                                                    : "w-2.5 bg-slate-300"
-                                            }`}
-                                            aria-label={`Pilih rating ${
-                                                idx + 1
-                                            }`}
-                                        />
-                                    );
-                                })}
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                {totalRatings > 0 &&
+                                    ratings.map((rating, idx) => {
+                                        const isActive = idx === (activeRatingIndex + totalRatings) % totalRatings;
+                                        return (
+                                            <button
+                                                key={rating.id ?? idx}
+                                                onClick={() => setActiveRatingIndex(idx)}
+                                                className={`h-2.5 w-2.5 rounded-full transition ${isActive ? "bg-purple-700" : "bg-slate-300"}`}
+                                                aria-label={`Pilih rating ${idx + 1}`}
+                                            />
+                                        );
+                                    })}
                             </div>
-                        )}
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => moveRating(-1)}
+                                    className="h-9 w-9 rounded-full border border-slate-200 text-slate-700 hover:border-purple-200 hover:text-purple-700 transition flex items-center justify-center"
+                                    aria-label="Sebelumnya"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        className="h-5 w-5"
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 5l-7 7 7 7" />
+                                    </svg>
+                                </button>
+                                <button
+                                    onClick={() => moveRating(1)}
+                                    className="h-9 w-9 rounded-full border border-slate-200 text-slate-700 hover:border-purple-200 hover:text-purple-700 transition flex items-center justify-center"
+                                    aria-label="Berikutnya"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        className="h-5 w-5"
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-50 via-white to-amber-50 border border-slate-100">
+                    <div className="relative overflow-hidden rounded-3xl border border-slate-100 shadow-sm">
                         <img
-                            src={RATING_VISUAL}
+                            src="/images/rating.png"
                             alt="Kepuasan pelanggan"
                             className="h-full w-full object-cover"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/30 via-purple-900/10 to-transparent" />
                     </div>
                 </div>
             </section>
 
             <section
                 id="contact-section"
-                className="relative -mx-4 sm:-mx-6 lg:-mx-8 overflow-hidden rounded-3xl bg-purple-900 text-white"
+                className="relative -mx-4 sm:-mx-6 lg:-mx-8 bg-[#1f0235] text-white"
             >
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.12),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.08),transparent_35%)]" />
                 <div className="relative max-w-6xl mx-auto px-6 sm:px-10 py-12 sm:py-14">
-                    <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-start">
-                        <div className="space-y-3 max-w-lg">
-                            <h3 className="text-2xl font-bold">
-                                Wishasi Tour and Travel
-                            </h3>
-                            <p className="text-purple-100 leading-relaxed">
-                                Kami hadir untuk membantu merencanakan
-                                perjalanan terbaik Anda, mulai dari konsultasi
-                                hingga pendampingan penuh selama tour
-                                berlangsung.
-                            </p>
-                            <p className="text-sm text-purple-200">
-                                (c) 2023 Bayu Buana Travel Services. All Rights
-                                Reserved.
-                            </p>
-                        </div>
-                        <div className="grid sm:grid-cols-2 gap-8 flex-1 w-full">
-                            <div className="space-y-3">
-                                <p className="text-sm uppercase tracking-[0.2em] text-purple-200">
-                                    Call Us
-                                </p>
-                                <p className="text-lg font-semibold">
-                                    (021) 2350 9999
-                                </p>
-                                <p className="text-sm uppercase tracking-[0.2em] text-purple-200 pt-2">
-                                    Email Us
-                                </p>
-                                <p className="text-lg font-semibold">
-                                    marketing@bayubuanatravel.com
-                                </p>
-                            </div>
-                            <div className="space-y-3">
-                                <p className="text-sm uppercase tracking-[0.2em] text-purple-200">
-                                    Follow Us
-                                </p>
-                                <div className="flex items-center gap-3">
-                                    {[
-                                        "facebook",
-                                        "instagram",
-                                        "x",
-                                        "youtube",
-                                    ].map((network) => (
-                                        <span
-                                            key={network}
-                                            className="h-10 w-10 rounded-full bg-purple-800 text-purple-50 flex items-center justify-center font-semibold uppercase"
-                                        >
-                                            {network[0]}
-                                        </span>
-                                    ))}
+                    <div className="grid md:grid-cols-3 gap-10 items-start">
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-3 mb-8">
+                                <img src="/images/logo.png" alt="Wishasi" className="h-12 w-12 object-contain" />
+                                <div className="leading-tight">
+                                    <p className="text-xl font-bold text-purple-100">Wishasi</p>
+                                    <p className="text-sm text-purple-100">Tour and Travel</p>
                                 </div>
                             </div>
+                            <p className="text-sm text-purple-100 leading-relaxed max-w-xs">
+                                Kami hadir untuk membantu merencanakan perjalanan terbaik Anda, mulai dari konsultasi hingga
+                                pendampingan penuh selama tour berlangsung.
+                            </p>
                         </div>
+
+                        <div className="space-y-6">
+                            <div className="space-y-1">
+                                <p className="text-lg font-semibold">Call Us</p>
+                                <a
+                                    href="tel:088742877304"
+                                    className="text-sm text-purple-100 hover:text-white transition"
+                                >
+                                    0887 4287 7304
+                                </a>
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-lg font-semibold">Email Us</p>
+                                <a
+                                    href="mailto:wishasitrv191@gmail.com"
+                                    className="text-sm text-purple-100 hover:text-white transition"
+                                >
+                                    wishasitrv191@gmail.com
+                                </a>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            <p className="text-lg font-semibold">Follow Us</p>
+                            <div className="flex items-center gap-4">
+                                <a
+                                    href="https://instagram.com/"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="h-11 w-11 rounded-full bg-purple-800 text-white flex items-center justify-center hover:bg-purple-700 transition"
+                                    aria-label="Instagram"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path
+                                            fill="#d8d8d8"
+                                            d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"
+                                        />
+                                    </svg>
+                                </a>
+                                <a
+                                    href="https://tiktok.com/"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="h-11 w-11 rounded-full bg-purple-800 text-white flex items-center justify-center hover:bg-purple-700 transition"
+                                    aria-label="Tiktok"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        aria-hidden="true"
+                                        className="text-white"
+                                    >
+                                        <path
+                                            fill="currentColor"
+                                            d="M16.6 5.82s.51.5 0 0A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6c0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64c0 3.33 2.76 5.7 5.69 5.7c3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48"
+                                        />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-10 border-t border-purple-800 pt-4 text-center text-xs text-purple-200">
+                        © 2025 Wishasi Tour and Travel. All Rights Reserved.
                     </div>
                 </div>
             </section>
