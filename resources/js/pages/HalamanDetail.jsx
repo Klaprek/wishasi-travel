@@ -1,26 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import { formatTanggalIndo } from "../utils/date";
 import { useAuth } from "../providers/AuthProvider";
 
-const HalamanDetail = () => {
+const HalamanDetail = ({ prefetchedPaket = null, disableRedirect = false }) => {
     const { id } = useParams();
-    const { data: paket, loading, error } = useFetch(`/api/paket/${id}`);
+    const { data: paketFetched, loading, error } = useFetch(`/api/paket/${id}`, { enabled: !prefetchedPaket });
+    const paket = useMemo(() => prefetchedPaket || paketFetched, [prefetchedPaket, paketFetched]);
     const { user } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (disableRedirect) return;
         if (user?.role === "owner") {
             navigate("/owner/rekapitulasi", { replace: true });
         } else if (user?.role === "admin") {
             navigate("/admin/paket", { replace: true });
         }
-    }, [user, navigate]);
+    }, [user, navigate, disableRedirect]);
 
-    if (loading)
+    if (!prefetchedPaket && loading)
         return <p className="text-slate-600">Memuat detail paket...</p>;
-    if (error) return <p className="text-red-600">Gagal memuat paket</p>;
+    if (!prefetchedPaket && error) return <p className="text-red-600">Gagal memuat paket</p>;
     if (!paket) return null;
 
     const banner =
@@ -35,7 +37,7 @@ const HalamanDetail = () => {
         .filter(Boolean);
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 pt-6 pb-10">
             <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
                 <div
                     className="h-60 md:h-72 bg-slate-100"
@@ -89,7 +91,7 @@ const HalamanDetail = () => {
                             <p className="text-lg font-semibold text-slate-900">
                                 {paket.lama_hari != null &&
                                 paket.lama_malam != null
-                                    ? `${paket.lama_hari} Hari/${paket.lama_malam} Malam`
+                                    ? `${paket.lama_hari}D/${paket.lama_malam}N`
                                     : "-"}
                             </p>
                         </div>
@@ -184,6 +186,7 @@ const HalamanDetail = () => {
                     <div className="flex flex-wrap gap-3 pt-2">
                         <Link
                             to={`/paket/${paket.id}/pesan`}
+                            state={{ paket }}
                             className="px-5 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700"
                         >
                             Pesan Sekarang

@@ -41,7 +41,7 @@ class PaketTourController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function ratings()
+    public function ambilDataRating()
     {
         $ratings = Rating::with([
             'paketTour:id,nama_paket,banner',

@@ -182,7 +182,7 @@ export default function HalamanPesananSaya() {
 
                             {filter === 'pesanan_ditolak' && (
                                 <div className="border border-red-200 rounded-xl p-4 bg-red-50 text-red-800 text-sm">
-                                    Pesanan ditolak. {order.alasan_penolakan ? `Alasan: ${order.alasan_penolakan}` : ''}
+                                    {order.alasan_penolakan ? `Alasan: ${order.alasan_penolakan}` : ''}
                                 </div>
                             )}
                         </div>

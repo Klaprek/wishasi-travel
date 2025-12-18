@@ -4,8 +4,6 @@ import api from '../lib/api';
 const MenuProfil = () => {
     const [form, setForm] = useState({ name: '', email: '' });
     const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
-    const [message, setMessage] = useState(null);
     const [error, setError] = useState(null);
     const [passwordForm, setPasswordForm] = useState({
         current_password: '',
@@ -19,7 +17,7 @@ const MenuProfil = () => {
     useEffect(() => {
         const load = async () => {
             try {
-                const response = await api.get('/profile');
+                const response = await api.get('/api/me');
                 const user = response.data.data ?? response.data?.user ?? null;
                 if (user) {
                     setForm({ name: user.name ?? '', email: user.email ?? '' });
@@ -32,21 +30,6 @@ const MenuProfil = () => {
         };
         load();
     }, []);
-
-    const submit = async (e) => {
-        e.preventDefault();
-        setSaving(true);
-        setMessage(null);
-        setError(null);
-        try {
-            const response = await api.patch('/profile', form);
-            setMessage(response.data.message ?? 'Profil diperbarui');
-        } catch (err) {
-            setError(err.response?.data?.message || 'Gagal memperbarui profil');
-        } finally {
-            setSaving(false);
-        }
-    };
 
     const submitPassword = async (e) => {
         e.preventDefault();
@@ -76,7 +59,6 @@ const MenuProfil = () => {
                 <p className="text-sm uppercase tracking-[0.2em] text-indigo-600 font-semibold">Halaman Profile</p>
                 <h1 className="text-3xl font-bold text-slate-900">Perbarui informasi akun</h1>
             </div>
-            {message && <div className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">{message}</div>}
             {error && <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">{error}</div>}
             <div className="grid gap-8">
                 <div className="space-y-4">

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,7 +18,7 @@ use App\Http\Controllers\Admin\PesertaController as PesertaControllerAdmin;
 
 // Owner controllers
 use App\Http\Controllers\Owner\RekapitulasiController;
-use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\PaymentController;
 
 // -----------------------------------------------------
@@ -30,15 +29,15 @@ Route::get('/', [PaketTourController::class, 'ambilDataPaket']);
 Route::get('/paket/{paketTour}', [PaketTourController::class, 'show']);
 Route::get('/api/paket', [PaketTourController::class, 'ambilDataPaket']);
 Route::get('/api/paket/{paketTour}', [PaketTourController::class, 'show']);
-Route::get('/api/ratings', [PaketTourController::class, 'ratings']);
+Route::get('/api/ratings', [PaketTourController::class, 'ambilDataRating']);
 
 // -----------------------------------------------------
 // SOCIAL AUTH (GOOGLE)
 // -----------------------------------------------------
 
 Route::middleware('guest')->group(function () {
-    Route::get('/auth/google/redirect', [SocialiteController::class, 'redirect'])->name('google.redirect');
-    Route::get('/auth/google/callback', [SocialiteController::class, 'callback'])->name('google.callback');
+    Route::get('/auth/google/redirect', [AuthController::class, 'redirect'])->name('google.redirect');
+    Route::get('/auth/google/callback', [AuthController::class, 'callback'])->name('google.callback');
 });
 
 
@@ -59,10 +58,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/api/me', function (Request $request) {
         return response()->json(['data' => $request->user()]);
     });
-
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 
