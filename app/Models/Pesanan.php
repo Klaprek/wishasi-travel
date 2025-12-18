@@ -36,11 +36,10 @@ class Pesanan extends Model
     }
 
     /**
-     * Rating yang diberikan pengguna pada paket ini (jika ada).
+     * Rating yang diberikan pengguna pada pesanan ini (jika ada).
      */
     public function rating()
     {
-        return $this->hasOne(Rating::class, 'paket_id', 'paket_id')
-            ->where('user_id', $this->user_id);
+        return $this->hasOne(Rating::class, 'pesanan_id');
     }
 }

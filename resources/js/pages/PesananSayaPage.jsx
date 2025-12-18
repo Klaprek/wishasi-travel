@@ -53,27 +53,29 @@ export default function PesananSayaPage() {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 pt-6 pb-6">
             <div className="bg-white border border-slate-200 shadow rounded-3xl p-6">
                 <p className="text-sm uppercase tracking-[0.2em] text-indigo-600 font-semibold">Pesanan Saya</p>
                 <h1 className="text-3xl font-bold text-slate-900">Pantau semua perjalananmu</h1>
                 <p className="text-slate-600">Isi data peserta, lakukan pembayaran, dan cek status verifikasi.</p>
             </div>
 
-            <div className="flex flex-wrap gap-2">
-                {FILTERS.map((f) => (
-                    <button
-                        key={f.value}
-                        onClick={() => setFilter(f.value)}
-                        className={`px-3 py-2 rounded-lg text-sm font-semibold border transition ${
-                            filter === f.value
-                                ? 'bg-indigo-600 text-white border-indigo-600'
-                                : 'bg-white text-slate-700 border-slate-200 hover:border-indigo-200'
-                        }`}
-                    >
-                        {f.label}
-                    </button>
-                ))}
+            <div className="overflow-x-auto -mx-1">
+                <div className="flex flex-nowrap gap-2 px-1 pb-2">
+                    {FILTERS.map((f) => (
+                        <button
+                            key={f.value}
+                            onClick={() => setFilter(f.value)}
+                            className={`flex-shrink-0 whitespace-nowrap px-3 py-2 rounded-lg text-sm font-semibold border transition ${
+                                filter === f.value
+                                    ? 'bg-indigo-600 text-white border-indigo-600'
+                                    : 'bg-white text-slate-700 border-slate-200 hover:border-indigo-200'
+                            }`}
+                        >
+                            {f.label}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             {actionError && (
@@ -101,13 +103,13 @@ export default function PesananSayaPage() {
                                     <h2 className="text-xl font-semibold text-slate-900">{order.paket_tour?.nama_paket}</h2>
                                     <p className="text-sm text-slate-600">Jumlah peserta: {order.jumlah_peserta}</p>
                                 </div>
-                                <span className={`px-3 py-1 rounded-full border text-xs font-semibold ${badge}`}>
+                                <span className={`px-3 py-1 rounded-full border text-xs font-semibold self-start ${badge}`}>
                                     {order.status_pesanan?.replaceAll('_', ' ')}
                                 </span>
                             </div>
                             {filter === 'menunggu_verifikasi' && (
-                                <div className="border border-slate-200 rounded-xl p-4 bg-slate-50">
-                                    <p className="text-xs text-slate-500 uppercase">Data Peserta</p>
+                                <div className="border border-slate-200 rounded-xl p-4 bg-slate-50 flex items-center justify-between gap-4">
+                                    <p className="text-sm text-slate-500">Lengkapi data peserta</p>
                                     <div className="flex gap-2 mt-2 flex-wrap">
                                         <Link
                                             to={`/pesanan/${order.id}/data-peserta`}
@@ -120,8 +122,8 @@ export default function PesananSayaPage() {
                             )}
 
                             {filter === 'menunggu_pembayaran' && (
-                                <div className="border border-slate-200 rounded-xl p-4 bg-slate-50">
-                                    <p className="text-xs text-slate-500 uppercase">Pembayaran</p>
+                                <div className="border border-slate-200 rounded-xl p-4 bg-slate-50 flex items-center justify-between gap-4">
+                                    <p className="text-xs text-slate-500">Lakukan pembayaran</p>
                                     <p className="font-semibold text-slate-800 mt-2">
                                         Total estimasi: Rp{' '}
                                         {(
@@ -140,7 +142,8 @@ export default function PesananSayaPage() {
                             {filter === 'pembayaran_selesai' && (
                                 <div className="border border-slate-200 rounded-xl p-4 bg-slate-50 flex items-center justify-between gap-4">
                                     <div>
-                                        <p className="text-sm text-slate-600">Pembayaran telah selesai.</p>
+                                        <p className="text-sm text-slate-600 mb-4">Pembayaran telah selesai</p>
+                                        <p className="text-sm text-slate-600">Tekan pesanan selesai jika sudah melakukan perjalanan tour</p>
                                     </div>
                                     <button
                                         onClick={() => markSelesai(order.id)}
@@ -153,13 +156,22 @@ export default function PesananSayaPage() {
                             )}
 
                             {filter === 'pesanan_selesai' && (
-                                <div className="border border-slate-200 rounded-xl p-4 bg-slate-50">
+                                <div className="border border-slate-200 rounded-xl p-4 bg-slate-50 flex items-center justify-between gap-4">
                                     <p className="text-sm text-slate-600 mb-2">
-                                        {order.rating ? 'Rating sudah dikirim.' : 'Berikan ulasan perjalananmu.'}
+                                        {order.rating ? 'Rating sudah dikirim' : 'Berikan ulasan perjalananmu'}
                                     </p>
-                                    {!order.rating && (
+                                    {order.rating ? (
+                                        <button
+                                            type="button"
+                                            disabled
+                                            className="inline-flex px-4 py-2 bg-slate-200 text-slate-500 rounded-lg text-sm font-semibold cursor-not-allowed"
+                                            title="Rating sudah dikirim"
+                                        >
+                                            Beri Rating
+                                        </button>
+                                    ) : (
                                         <Link
-                                            to={`/paket/${order.paket_id}/rating`}
+                                            to={`/pesanan/${order.id}/rating`}
                                             className="inline-flex px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700"
                                         >
                                             Beri Rating

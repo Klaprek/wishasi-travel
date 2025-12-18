@@ -321,12 +321,22 @@ const KatalogPage = () => {
                 <div className="grid lg:grid-cols-2 gap-6 items-stretch">
                     <div className="flex flex-col gap-4">
                         <div className="space-y-1">
-                            <p className="text-2xl sm:text-3xl font-semibold text-purple-700 mb-4 italic">Rating</p>
-                            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">Trusted By Our Customers</h2>
+                            <p className="text-2xl sm:text-3xl font-semibold text-purple-700 mb-4 italic">
+                                Rating
+                            </p>
+                            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+                                Trusted By Our Customers
+                            </h2>
                         </div>
 
-                        {loadingRatings && <p className="text-slate-600">Memuat rating...</p>}
-                        {errorRatings && <p className="text-red-600 text-sm">Gagal memuat rating. Coba lagi nanti.</p>}
+                        {loadingRatings && (
+                            <p className="text-slate-600">Memuat rating...</p>
+                        )}
+                        {errorRatings && (
+                            <p className="text-red-600 text-sm">
+                                Gagal memuat rating. Coba lagi nanti.
+                            </p>
+                        )}
 
                         {currentRating && (
                             <div className="bg-white border border-slate-200 rounded-3xl shadow-sm p-6 sm:p-8 space-y-4">
@@ -334,17 +344,30 @@ const KatalogPage = () => {
                                     {currentRating.user?.name ?? "Traveler"}
                                 </p>
                                 <p className="text-sm text-slate-700 leading-relaxed italic">
-                                    “{currentRating.ulasan || "Tanpa ulasan tertulis"}”
+                                    “
+                                    {currentRating.ulasan ||
+                                        "Tanpa ulasan tertulis"}
+                                    ”
                                 </p>
                                 <div className="flex items-center gap-2 text-amber-500">
                                     {Array.from({ length: 5 }).map((_, idx) => {
-                                        const filled = idx + 1 <= Math.round(Number(currentRating.nilai_rating) || 0);
+                                        const filled =
+                                            idx + 1 <=
+                                            Math.round(
+                                                Number(
+                                                    currentRating.nilai_rating
+                                                ) || 0
+                                            );
                                         return (
                                             <svg
                                                 key={idx}
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 24 24"
-                                                fill={filled ? "currentColor" : "none"}
+                                                fill={
+                                                    filled
+                                                        ? "currentColor"
+                                                        : "none"
+                                                }
                                                 stroke="currentColor"
                                                 strokeWidth="1.4"
                                                 className="h-5 w-5"
@@ -362,20 +385,33 @@ const KatalogPage = () => {
                         )}
 
                         {!loadingRatings && !currentRating && (
-                            <p className="text-slate-600 text-sm">Belum ada rating yang ditampilkan.</p>
+                            <p className="text-slate-600 text-sm">
+                                Belum ada rating yang ditampilkan.
+                            </p>
                         )}
 
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 {totalRatings > 0 &&
                                     ratings.map((rating, idx) => {
-                                        const isActive = idx === (activeRatingIndex + totalRatings) % totalRatings;
+                                        const isActive =
+                                            idx ===
+                                            (activeRatingIndex + totalRatings) %
+                                                totalRatings;
                                         return (
                                             <button
                                                 key={rating.id ?? idx}
-                                                onClick={() => setActiveRatingIndex(idx)}
-                                                className={`h-2.5 w-2.5 rounded-full transition ${isActive ? "bg-purple-700" : "bg-slate-300"}`}
-                                                aria-label={`Pilih rating ${idx + 1}`}
+                                                onClick={() =>
+                                                    setActiveRatingIndex(idx)
+                                                }
+                                                className={`h-2.5 w-2.5 rounded-full transition ${
+                                                    isActive
+                                                        ? "bg-purple-700"
+                                                        : "bg-slate-300"
+                                                }`}
+                                                aria-label={`Pilih rating ${
+                                                    idx + 1
+                                                }`}
                                             />
                                         );
                                     })}
@@ -394,7 +430,11 @@ const KatalogPage = () => {
                                         strokeWidth="2"
                                         className="h-5 w-5"
                                     >
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 5l-7 7 7 7" />
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M15 5l-7 7 7 7"
+                                        />
                                     </svg>
                                 </button>
                                 <button
@@ -410,7 +450,11 @@ const KatalogPage = () => {
                                         strokeWidth="2"
                                         className="h-5 w-5"
                                     >
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M9 5l7 7-7 7"
+                                        />
                                     </svg>
                                 </button>
                             </div>
@@ -435,15 +479,25 @@ const KatalogPage = () => {
                     <div className="grid md:grid-cols-3 gap-10 items-start">
                         <div className="space-y-4">
                             <div className="flex items-center gap-3 mb-8">
-                                <img src="/images/logo.png" alt="Wishasi" className="h-12 w-12 object-contain" />
+                                <img
+                                    src="/images/logo.png"
+                                    alt="Wishasi"
+                                    className="h-12 w-12 object-contain"
+                                />
                                 <div className="leading-tight">
-                                    <p className="text-xl font-bold text-purple-100">Wishasi</p>
-                                    <p className="text-sm text-purple-100">Tour and Travel</p>
+                                    <p className="text-xl font-bold text-purple-100">
+                                        Wishasi
+                                    </p>
+                                    <p className="text-sm text-purple-100">
+                                        Tour and Travel
+                                    </p>
                                 </div>
                             </div>
                             <p className="text-sm text-purple-100 leading-relaxed max-w-xs">
-                                Kami hadir untuk membantu merencanakan perjalanan terbaik Anda, mulai dari konsultasi hingga
-                                pendampingan penuh selama tour berlangsung.
+                                Kami hadir untuk membantu merencanakan
+                                perjalanan terbaik Anda, mulai dari konsultasi
+                                hingga pendampingan penuh selama tour
+                                berlangsung.
                             </p>
                         </div>
 
@@ -458,7 +512,9 @@ const KatalogPage = () => {
                                 </a>
                             </div>
                             <div className="space-y-1">
-                                <p className="text-lg font-semibold">Email Us</p>
+                                <p className="text-lg font-semibold">
+                                    Email Us
+                                </p>
                                 <a
                                     href="mailto:wishasitrv191@gmail.com"
                                     className="text-sm text-purple-100 hover:text-white transition"
@@ -478,7 +534,13 @@ const KatalogPage = () => {
                                     className="h-11 w-11 rounded-full bg-purple-800 text-white flex items-center justify-center hover:bg-purple-700 transition"
                                     aria-label="Instagram"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
                                         <path
                                             fill="#d8d8d8"
                                             d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"

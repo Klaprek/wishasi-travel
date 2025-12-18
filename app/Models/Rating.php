@@ -8,6 +8,7 @@ class Rating extends Model
 {
     protected $fillable = [
         'user_id',
+        'pesanan_id',
         'paket_id',
         'nilai_rating',
         'ulasan',
@@ -17,6 +18,11 @@ class Rating extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function pesanan()
+    {
+        return $this->belongsTo(Pesanan::class);
     }
 
     public function paketTour()

@@ -5,7 +5,7 @@ import useFetch from '../hooks/useFetch';
 
 export default function RatingPage() {
     const { id } = useParams();
-    const { data: paket } = useFetch(`/api/paket/${id}`);
+    const { data: pesanan, loading, error: loadError } = useFetch(`/pesanan/${id}/peserta`);
     const navigate = useNavigate();
     const [nilai, setNilai] = useState(5);
     const [ulasan, setUlasan] = useState('');
@@ -19,7 +19,7 @@ export default function RatingPage() {
         setMessage(null);
         setError(null);
         try {
-            const response = await api.post(`/paket/${id}/rating`, {
+            const response = await api.post(`/pesanan/${id}/rating`, {
                 nilai_rating: nilai,
                 ulasan,
             });
@@ -37,11 +37,15 @@ export default function RatingPage() {
         }
     };
 
+    if (loading) return <p className="text-slate-600">Memuat form rating...</p>;
+    if (loadError) return <p className="text-red-600">Gagal memuat pesanan</p>;
+
     return (
         <div className="max-w-xl mx-auto bg-white border border-slate-200 rounded-3xl shadow p-8 space-y-6">
             <div>
                 <p className="text-sm uppercase tracking-[0.2em] text-indigo-600 font-semibold">Form Rating</p>
-                <h1 className="text-3xl font-bold text-slate-900">Beri ulasan untuk {paket?.nama_paket}</h1>
+                <h1 className="text-3xl font-bold text-slate-900">Beri ulasan untuk {pesanan?.paket_tour?.nama_paket}</h1>
+                <p className="text-sm text-slate-500">Pesanan #{pesanan?.id}</p>
                 <p className="text-slate-600">Nilai dari 1-5 dan tulis pengalamanmu.</p>
             </div>
             {message && <div className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">{message}</div>}

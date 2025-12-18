@@ -79,7 +79,7 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
     Route::post('/pesanan/{pesanan}/peserta', [PesertaController::class, 'store']);
     Route::post('/pesanan/{pesanan}/selesai', [PesananController::class, 'markSelesai']);
 
-    Route::post('/paket/{paketTour}/rating', [RatingController::class, 'store'])
+    Route::post('/pesanan/{pesanan}/rating', [RatingController::class, 'store'])
         ->name('rating.store');
 
     Route::post('/payments/{pesanan}/snap-token', [PaymentController::class, 'createSnapToken']);

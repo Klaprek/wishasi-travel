@@ -3,31 +3,45 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Models\Pesanan;
 use App\Models\Rating;
-use App\Models\PaketTour;
 use Illuminate\Http\Request;
 
 /**
- * Controller pelanggan untuk memberi rating dan ulasan pada paket tour.
+ * Controller pelanggan untuk memberi rating dan ulasan pada pesanan.
  */
 class RatingController extends Controller
 {
     /**
-     * Membuat atau memperbarui rating dan ulasan pengguna untuk paket.
+     * Membuat rating dan ulasan pengguna untuk pesanan.
      *
      * @param Request $request
-     * @param PaketTour $paketTour
+     * @param Pesanan $pesanan
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request, PaketTour $paketTour)
+    public function store(Request $request, Pesanan $pesanan)
     {
         $request->validate([
             'nilai_rating' => 'required|integer|min:1|max:5',
-            'ulasan' => 'nullable|string'
+            'ulasan' => 'nullable|string',
         ]);
 
+        if ($pesanan->user_id !== $request->user()->id) {
+            abort(403);
+        }
+
+        if ($pesanan->status_pesanan !== 'pesanan_selesai') {
+            if (! $request->expectsJson()) {
+                return redirect('/pesanan-saya')->with('info', 'Pesanan belum selesai, rating belum bisa diberikan');
+            }
+
+            return response()->json([
+                'message' => 'Pesanan belum selesai, rating belum bisa diberikan',
+            ], 422);
+        }
+
         $existing = Rating::where('user_id', auth()->id())
-            ->where('paket_id', $paketTour->id)
+            ->where('pesanan_id', $pesanan->id)
             ->first();
 
         if ($existing) {
@@ -39,17 +53,18 @@ class RatingController extends Controller
             }
 
             return redirect('/pesanan-saya?status=pesanan_selesai')
-                ->with('info', 'Rating sudah pernah diberikan untuk paket ini');
+                ->with('info', 'Rating sudah pernah diberikan untuk pesanan ini');
         }
 
         $rating = Rating::updateOrCreate(
             [
                 'user_id' => auth()->id(),
-                'paket_id' => $paketTour->id
+                'pesanan_id' => $pesanan->id,
             ],
             [
+                'paket_id' => $pesanan->paket_id,
                 'nilai_rating' => $request->nilai_rating,
-                'ulasan' => $request->ulasan
+                'ulasan' => $request->ulasan,
             ]
         );
 

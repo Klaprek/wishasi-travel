@@ -22,6 +22,10 @@ class PesertaController extends Controller
      */
     public function create(Request $request, Pesanan $pesanan)
     {
+        if ($pesanan->user_id !== $request->user()->id) {
+            abort(403);
+        }
+
         $pesanan->load('paketTour', 'pesertas');
 
         if ($request->expectsJson()) {
@@ -40,6 +44,10 @@ class PesertaController extends Controller
      */
     public function store(Request $request, Pesanan $pesanan)
     {
+        if ($pesanan->user_id !== $request->user()->id) {
+            abort(403);
+        }
+
         $wajibIdentitas = (bool) ($pesanan->paketTour->wajib_identitas ?? false);
         $wajibPaspor = (bool) ($pesanan->paketTour->wajib_paspor ?? false);
 

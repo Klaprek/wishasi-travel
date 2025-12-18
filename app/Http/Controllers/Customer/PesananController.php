@@ -20,8 +20,14 @@ class PesananController extends Controller
      */
     public function index(Request $request)
     {
-        $pesanan = Pesanan::where('user_id', auth()->id())
-            ->with('paketTour', 'pesertas', 'rating')
+        $userId = $request->user()->id;
+
+        $pesanan = Pesanan::where('user_id', $userId)
+            ->with([
+                'paketTour',
+                'pesertas',
+                'rating' => fn ($query) => $query->where('user_id', $userId),
+            ])
             ->latest()
             ->get();
 

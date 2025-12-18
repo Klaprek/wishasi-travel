@@ -64,7 +64,7 @@ const FormPesertaPage = () => {
     if (loading) return <p className="text-slate-600">Memuat form peserta...</p>;
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 pt-6 pb-6">
             <div className="flex items-center justify-between">
                 <div>
                     <p className="text-sm uppercase tracking-[0.2em] text-indigo-600 font-semibold">Data Peserta</p>

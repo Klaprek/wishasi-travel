@@ -52,7 +52,6 @@ const DetailPaketPage = () => {
                 <div className="p-6 md:p-8 space-y-4">
                     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                         <div className="space-y-1">
-                            <p className="text-xs font-semibold tracking-[0.2em] text-indigo-600 uppercase">Paket Tour</p>
                             <h1 className="text-3xl font-bold text-slate-900">{paket.nama_paket}</h1>
                             <p className="text-slate-600">{paket.destinasi}</p>
                         </div>
@@ -61,13 +60,13 @@ const DetailPaketPage = () => {
                             <p className="text-2xl md:text-3xl font-bold text-indigo-700">
                                 Rp {Number(paket.harga_per_peserta ?? 0).toLocaleString('id-ID')}
                             </p>
-                            <p className="text-xs text-slate-500">per peserta</p>
+                            <p className="text-xs text-slate-500">per pax</p>
                         </div>
                     </div>
 
                     <div className="grid gap-3 md:grid-cols-3">
                         <div className="border border-slate-200 rounded-2xl px-4 py-3 bg-slate-50">
-                            <p className="text-xs uppercase tracking-wide text-slate-500">Jadwal</p>
+                            <p className="text-xs uppercase tracking-wide text-slate-500">Keberangkatan</p>
                             <p className="text-lg font-semibold text-slate-900">{formatTanggalIndo(paket.jadwal_keberangkatan)}</p>
                         </div>
                         <div className="border border-slate-200 rounded-2xl px-4 py-3 bg-slate-50">

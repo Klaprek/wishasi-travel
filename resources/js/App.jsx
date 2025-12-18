@@ -44,7 +44,7 @@ export default function App() {
                         }
                     />
                     <Route
-                        path="/paket/:id/rating"
+                        path="/pesanan/:id/rating"
                         element={
                             <RequireRole roles={['customer']}>
                                 <RatingPage />
