@@ -13,11 +13,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
         $this->call(UserSeeder::class);
     }
 }
