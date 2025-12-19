@@ -26,9 +26,9 @@ use App\Http\Controllers\PaymentController;
 // -----------------------------------------------------
 
 Route::get('/', [PaketTourController::class, 'ambilDataPaket']);
-Route::get('/paket/{paketTour}', [PaketTourController::class, 'show']);
+Route::get('/paket/{paketTour}', [PaketTourController::class, 'ambilDataDetail']);
 Route::get('/api/paket', [PaketTourController::class, 'ambilDataPaket']);
-Route::get('/api/paket/{paketTour}', [PaketTourController::class, 'show']);
+Route::get('/api/paket/{paketTour}', [PaketTourController::class, 'ambilDataDetail']);
 Route::get('/api/ratings', [PaketTourController::class, 'ambilDataRating']);
 
 // -----------------------------------------------------

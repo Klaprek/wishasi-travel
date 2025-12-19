@@ -77,13 +77,11 @@ class PaketTourController extends Controller
      * @param PaketTour $paketTour
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function show(Request $request, PaketTour $paketTour)
+    public function ambilDataDetail(Request $request, PaketTour $paketTour)
     {
         if (auth()->check() && in_array(auth()->user()->role, ['admin', 'owner'], true) && ! $request->expectsJson()) {
             return redirect(auth()->user()->role === 'owner' ? '/owner/rekapitulasi' : '/admin/paket');
         }
-
-        $paketTour->load('ratings');
 
         if ($request->expectsJson()) {
             return response()->json(['data' => $paketTour]);
