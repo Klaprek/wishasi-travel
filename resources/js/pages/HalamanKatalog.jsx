@@ -4,7 +4,7 @@ import useFetch from "../hooks/useFetch";
 import { formatTanggalIndo } from "../utils/date";
 import { useAuth } from "../providers/AuthProvider";
 
-const HERO_IMAGE = "/images/hero.jpg";
+const HERO_IMAGE = "/images/hero.webp";
 const RATING_VISUAL =
     "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=1200&q=80";
 
@@ -463,7 +463,7 @@ const HalamanKatalog = () => {
 
                     <div className="relative overflow-hidden rounded-3xl border border-slate-100 shadow-sm">
                         <img
-                            src="/images/rating.png"
+                            src="/images/rating.webp"
                             alt="Kepuasan pelanggan"
                             className="h-full w-full object-cover"
                         />
@@ -480,7 +480,7 @@ const HalamanKatalog = () => {
                         <div className="space-y-4">
                             <div className="flex items-center gap-3 mb-8">
                                 <img
-                                    src="/images/logo.png"
+                                    src="/images/logo.webp"
                                     alt="Wishasi"
                                     className="h-12 w-12 object-contain"
                                 />

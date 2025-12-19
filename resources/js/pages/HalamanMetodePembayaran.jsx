@@ -156,7 +156,7 @@ export default function HalamanMetodePembayaran() {
                                     className="inline-flex items-center justify-center h-10 w-10 rounded-md border border-slate-200 bg-white overflow-hidden"
                                 >
                                     <img
-                                        src={`/images/${va.code}.png`}
+                                        src={`/images/${va.code}.webp`}
                                         alt={`Logo ${va.name}`}
                                         className="h-8 w-8 object-contain"
                                     />

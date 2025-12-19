@@ -145,7 +145,7 @@ export default function Layout() {
             <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-6">
                     <Link to="/#hero-section" onClick={handleHomeClick} className="flex items-center gap-3">
-                        <img src="/images/logo.png" alt="Wishasi" className="h-12 w-12 object-contain" />
+                        <img src="/images/logo.webp" alt="Wishasi" className="h-12 w-12 object-contain" />
                         <div className="leading-tight">
                             <p className="text-xl font-bold text-purple-900">Wishasi</p>
                             <p className="ps-2 text-sm text-purple-800">Tour and Travel</p>
