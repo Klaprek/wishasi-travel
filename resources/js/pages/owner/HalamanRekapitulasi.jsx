@@ -1,76 +1,109 @@
-import React, { useMemo, useState } from 'react';
-import useFetch from '../../hooks/useFetch';
+import React, { useMemo, useState } from "react";
+import useFetch from "../../hooks/useFetch";
 
 export default function HalamanRekapitulasi() {
-    const [draftFilters, setDraftFilters] = useState({ bulan: '', tahun: '' });
-    const [appliedFilters, setAppliedFilters] = useState({ bulan: '', tahun: '' });
+    const [draftFilters, setDraftFilters] = useState({ bulan: "", tahun: "" });
+    const [appliedFilters, setAppliedFilters] = useState({
+        bulan: "",
+        tahun: "",
+    });
     const query = useMemo(() => {
         const params = new URLSearchParams();
-        if (appliedFilters.bulan) params.set('bulan', appliedFilters.bulan);
-        if (appliedFilters.tahun) params.set('tahun', appliedFilters.tahun);
+        if (appliedFilters.bulan) params.set("bulan", appliedFilters.bulan);
+        if (appliedFilters.tahun) params.set("tahun", appliedFilters.tahun);
         const qs = params.toString();
-        return qs ? `/owner/rekapitulasi?${qs}` : '/owner/rekapitulasi';
+        return qs ? `/owner/rekapitulasi?${qs}` : "/owner/rekapitulasi";
     }, [appliedFilters]);
 
     const { data: rekap, loading, error, refetch } = useFetch(query);
 
+    const rekapData = Array.isArray(rekap) ? rekap : rekap?.rekap ?? [];
+    const ratingRata = Array.isArray(rekap) ? null : rekap?.rating_rata ?? null;
+    const ratingLabel =
+        ratingRata === null ? "-" : Number(ratingRata).toFixed(2);
+
     const bulanOptions = [
-        { value: '', label: 'Semua bulan' },
-        { value: 1, label: 'Januari' },
-        { value: 2, label: 'Februari' },
-        { value: 3, label: 'Maret' },
-        { value: 4, label: 'April' },
-        { value: 5, label: 'Mei' },
-        { value: 6, label: 'Juni' },
-        { value: 7, label: 'Juli' },
-        { value: 8, label: 'Agustus' },
-        { value: 9, label: 'September' },
-        { value: 10, label: 'Oktober' },
-        { value: 11, label: 'November' },
-        { value: 12, label: 'Desember' },
+        { value: "", label: "Semua bulan" },
+        { value: 1, label: "Januari" },
+        { value: 2, label: "Februari" },
+        { value: 3, label: "Maret" },
+        { value: 4, label: "April" },
+        { value: 5, label: "Mei" },
+        { value: 6, label: "Juni" },
+        { value: 7, label: "Juli" },
+        { value: 8, label: "Agustus" },
+        { value: 9, label: "September" },
+        { value: 10, label: "Oktober" },
+        { value: 11, label: "November" },
+        { value: 12, label: "Desember" },
     ];
 
     const rows = useMemo(
         () =>
-            (rekap ?? []).flatMap((row) =>
+            (rekapData ?? []).flatMap((row) =>
                 (row.pesanan ?? []).map((item) => ({
                     paket: row.paket?.nama_paket,
-                    customer: item.customer ?? '-',
+                    customer: item.customer ?? "-",
                     jumlah_peserta: item.jumlah_peserta ?? 0,
+                    pembayaran: item.pembayaran ?? "-",
                     harga: item.harga ?? 0,
                 }))
             ),
-        [rekap]
+        [rekapData]
     );
 
     const totalPendapatan = useMemo(
-        () => rows.reduce((sum, item) => sum + Number(item.harga ?? 0) * Number(item.jumlah_peserta ?? 0), 0),
+        () =>
+            rows.reduce(
+                (sum, item) =>
+                    sum +
+                    Number(item.harga ?? 0) * Number(item.jumlah_peserta ?? 0),
+                0
+            ),
         [rows]
     );
 
     const getJudul = () => {
-        const bulanLabel = bulanOptions.find((b) => String(b.value) === String(appliedFilters.bulan))?.label ?? '';
-        if (!appliedFilters.bulan && !appliedFilters.tahun) return 'Rekapitulasi Penjualan';
-        if (!appliedFilters.bulan && appliedFilters.tahun) return `Rekapitulasi Penjualan Tahun ${appliedFilters.tahun}`;
-        return `Rekapitulasi Penjualan Bulan ${bulanLabel} Tahun ${appliedFilters.tahun || '-'}`;
+        const bulanLabel =
+            bulanOptions.find(
+                (b) => String(b.value) === String(appliedFilters.bulan)
+            )?.label ?? "";
+        if (!appliedFilters.bulan && !appliedFilters.tahun)
+            return "Rekapitulasi Penjualan";
+        if (!appliedFilters.bulan && appliedFilters.tahun)
+            return `Rekapitulasi Penjualan Tahun ${appliedFilters.tahun}`;
+        return `Rekapitulasi Penjualan Bulan ${bulanLabel} Tahun ${
+            appliedFilters.tahun || "-"
+        }`;
     };
 
     const handlePrint = () => {
         const judul = getJudul();
-        const win = window.open('', '_blank');
+        const win = window.open("", "_blank");
         if (!win) return;
         const rowsHtml = rows
             .map(
                 (item) => `
             <tr>
-                <td style="padding:8px;border:1px solid #e2e8f0;">${item.paket ?? '-'}</td>
-                <td style="padding:8px;border:1px solid #e2e8f0;">${item.customer}</td>
-                <td style="padding:8px;border:1px solid #e2e8f0; text-align:center;">${item.jumlah_peserta}</td>
-                <td style="padding:8px;border:1px solid #e2e8f0; text-align:right;">Rp ${Number(item.harga ?? 0).toLocaleString('id-ID')}</td>
+                <td style="padding:8px;border:1px solid #e2e8f0;">${
+                    item.paket ?? "-"
+                }</td>
+                <td style="padding:8px;border:1px solid #e2e8f0;">${
+                    item.customer
+                }</td>
+                <td style="padding:8px;border:1px solid #e2e8f0; text-align:center;">${
+                    item.jumlah_peserta
+                }</td>
+                <td style="padding:8px;border:1px solid #e2e8f0;">${
+                    item.pembayaran ?? "-"
+                }</td>
+                <td style="padding:8px;border:1px solid #e2e8f0; text-align:right;">Rp ${Number(
+                    item.harga ?? 0
+                ).toLocaleString("id-ID")}</td>
             </tr>
         `
             )
-            .join('');
+            .join("");
 
         win.document.write(`
             <html>
@@ -98,14 +131,21 @@ export default function HalamanRekapitulasi() {
                                 <th>Paket</th>
                                 <th>Customer</th>
                                 <th>Jumlah Peserta</th>
+                                <th>Pembayaran</th>
                                 <th>Harga</th>
                             </tr>
                         </thead>
                         <tbody>
-                            ${rowsHtml || '<tr><td colspan="4" style="padding:12px; text-align:center; color:#94a3b8;">Tidak ada data</td></tr>'}
+                            ${
+                                rowsHtml ||
+                                '<tr><td colspan="5" style="padding:12px; text-align:center; color:#94a3b8;">Tidak ada data</td></tr>'
+                            }
                         </tbody>
                     </table>
-                    <div style="margin-top:16px; font-weight:700;">Total Pendapatan: Rp ${Number(totalPendapatan).toLocaleString('id-ID')}</div>
+                    <div style="margin-top:12px; color:#475569;">Rating keseluruhan: ${ratingLabel}</div>
+                    <div style="margin-top:16px; font-weight:700;">Total Pendapatan: Rp ${Number(
+                        totalPendapatan
+                    ).toLocaleString("id-ID")}</div>
                     <script>window.onload = function(){ window.print(); window.close(); };</script>
                 </body>
             </html>
@@ -113,20 +153,31 @@ export default function HalamanRekapitulasi() {
         win.document.close();
     };
 
-    return (
-        <div className="space-y-6">
+    const tampilHalamanRekapitulasi = () => (
+        <div className="space-y-6 pt-6 pb-10">
             <div>
-                <p className="text-sm uppercase tracking-[0.2em] text-indigo-600 font-semibold">Halaman Rekapitulasi</p>
-                <h1 className="text-3xl font-bold text-slate-900">Ringkasan pemesanan per paket</h1>
+                <p className="text-sm uppercase tracking-[0.2em] text-indigo-600 font-semibold">
+                    Halaman Rekapitulasi
+                </p>
+                <h1 className="text-3xl font-bold text-slate-900">
+                    Ringkasan pemesanan per paket
+                </h1>
             </div>
 
             <div className="bg-white border border-slate-200 rounded-2xl shadow p-4 flex flex-col sm:flex-row gap-4 sm:items-end">
                 <div className="flex-1">
-                    <label className="text-sm font-semibold text-slate-700">Bulan</label>
+                    <label className="text-sm font-semibold text-slate-700">
+                        Bulan
+                    </label>
                     <select
                         className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
                         value={draftFilters.bulan}
-                        onChange={(e) => setDraftFilters((prev) => ({ ...prev, bulan: e.target.value }))}
+                        onChange={(e) =>
+                            setDraftFilters((prev) => ({
+                                ...prev,
+                                bulan: e.target.value,
+                            }))
+                        }
                     >
                         {bulanOptions.map((opt) => (
                             <option key={opt.value} value={opt.value}>
@@ -136,13 +187,20 @@ export default function HalamanRekapitulasi() {
                     </select>
                 </div>
                 <div className="flex-1">
-                    <label className="text-sm font-semibold text-slate-700">Tahun</label>
+                    <label className="text-sm font-semibold text-slate-700">
+                        Tahun
+                    </label>
                     <input
                         type="number"
                         placeholder="cth: 2024"
                         className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
                         value={draftFilters.tahun}
-                        onChange={(e) => setDraftFilters((prev) => ({ ...prev, tahun: e.target.value }))}
+                        onChange={(e) =>
+                            setDraftFilters((prev) => ({
+                                ...prev,
+                                tahun: e.target.value,
+                            }))
+                        }
                     />
                 </div>
                 <div className="flex items-center gap-2">
@@ -154,8 +212,8 @@ export default function HalamanRekapitulasi() {
                     </button>
                     <button
                         onClick={() => {
-                            setDraftFilters({ bulan: '', tahun: '' });
-                            setAppliedFilters({ bulan: '', tahun: '' });
+                            setDraftFilters({ bulan: "", tahun: "" });
+                            setAppliedFilters({ bulan: "", tahun: "" });
                         }}
                         className="px-4 py-2 border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-50"
                     >
@@ -180,6 +238,7 @@ export default function HalamanRekapitulasi() {
                             <th className="px-6 py-3">Paket</th>
                             <th className="px-6 py-3">Customer</th>
                             <th className="px-6 py-3">Jumlah Peserta</th>
+                            <th className="px-6 py-3">Pembayaran</th>
                             <th className="px-6 py-3">Harga</th>
                         </tr>
                     </thead>
@@ -187,18 +246,33 @@ export default function HalamanRekapitulasi() {
                         {rows.map((item, idx) => (
                             <tr key={idx} className="hover:bg-slate-50/80">
                                 <td className="px-6 py-4">
-                                    <p className="font-semibold text-slate-900">{item.paket}</p>
+                                    <p className="font-semibold text-slate-900">
+                                        {item.paket}
+                                    </p>
                                 </td>
-                                <td className="px-6 py-4 text-sm text-slate-700">{item.customer}</td>
-                                <td className="px-6 py-4 text-sm text-slate-700">{item.jumlah_peserta}</td>
                                 <td className="px-6 py-4 text-sm text-slate-700">
-                                    Rp {Number(item.harga ?? 0).toLocaleString('id-ID')}
+                                    {item.customer}
+                                </td>
+                                <td className="px-6 py-4 text-sm text-slate-700">
+                                    {item.jumlah_peserta}
+                                </td>
+                                <td className="px-6 py-4 text-sm text-slate-700">
+                                    {item.pembayaran}
+                                </td>
+                                <td className="px-6 py-4 text-sm text-slate-700">
+                                    Rp{" "}
+                                    {Number(item.harga ?? 0).toLocaleString(
+                                        "id-ID"
+                                    )}
                                 </td>
                             </tr>
                         ))}
-                        {!loading && (rekap ?? []).length === 0 && (
+                        {!loading && rekapData.length === 0 && (
                             <tr>
-                                <td className="px-6 py-6 text-center text-slate-500" colSpan={4}>
+                                <td
+                                    className="px-6 py-6 text-center text-slate-500"
+                                    colSpan={5}
+                                >
                                     Belum ada data.
                                 </td>
                             </tr>
@@ -206,10 +280,24 @@ export default function HalamanRekapitulasi() {
                     </tbody>
                 </table>
             </div>
-            <div className="flex items-center justify-end text-sm text-slate-700">
-                <span className="font-semibold mr-2">Total Pendapatan:</span>
-                <span>Rp {Number(totalPendapatan).toLocaleString('id-ID')}</span>
+            <div className="flex flex-col gap-1 items-end text-sm text-slate-700">
+                <div>
+                    <span className="font-semibold mr-2">
+                        Rating keseluruhan:
+                    </span>
+                    <span>{ratingLabel}</span>
+                </div>
+                <div>
+                    <span className="font-semibold mr-2">
+                        Total Pendapatan:
+                    </span>
+                    <span>
+                        Rp {Number(totalPendapatan).toLocaleString("id-ID")}
+                    </span>
+                </div>
             </div>
         </div>
     );
+
+    return tampilHalamanRekapitulasi();
 }

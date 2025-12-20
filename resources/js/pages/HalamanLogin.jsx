@@ -12,6 +12,12 @@ export default function HalamanLogin() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    const tampilPesan = (pesan = 'Username atau password tidak valid') => (
+        <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">
+            {pesan}
+        </div>
+    );
+
     const submit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -28,13 +34,13 @@ export default function HalamanLogin() {
                 navigate(redirectTo, { replace: true });
             }
         } catch (err) {
-            setError('Email atau password tidak valid');
+            setError(tampilPesan());
         } finally {
             setLoading(false);
         }
     };
 
-    return (
+    const tampilHalamanLogin = () => (
         <div className="flex justify-center py-6 sm:py-8 lg:py-10">
             <div className="w-full max-w-sm mx-auto bg-white border border-slate-200 rounded-2xl shadow-lg p-5 sm:p-6 space-y-4">
                 <button
@@ -49,9 +55,7 @@ export default function HalamanLogin() {
                     <h1 className="text-xl font-bold text-slate-900">Masuk ke akunmu</h1>
                     <p className="text-sm text-slate-600">Gunakan email dan password yang sudah terdaftar.</p>
                 </div>
-                {error && (
-                    <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">{error}</div>
-                )}
+                {error}
                 <form className="space-y-4" onSubmit={submit}>
                     <div className="space-y-1">
                         <label className="text-sm font-semibold text-slate-700">Email</label>
@@ -96,4 +100,6 @@ export default function HalamanLogin() {
             </div>
         </div>
     );
+
+    return tampilHalamanLogin();
 }

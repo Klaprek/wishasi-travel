@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pesanan;
+use App\Models\Pembayaran;
 use Illuminate\Http\Request;
 use Midtrans\Config as MidtransConfig;
 use Midtrans\Snap;
@@ -25,6 +26,36 @@ class PaymentController extends Controller
         MidtransConfig::$isProduction = (bool) config('services.midtrans.is_production', false);
         MidtransConfig::$isSanitized = true;
         MidtransConfig::$is3ds = true;
+    }
+
+    /**
+     * Normalisasi status transaksi Midtrans ke status pembayaran lokal.
+     *
+     * @param string|null $transactionStatus
+     * @return string
+     */
+    protected function mapPembayaranStatus(?string $transactionStatus): string
+    {
+        return match ($transactionStatus) {
+            'settlement', 'capture' => 'settlement',
+            'expire', 'cancel', 'deny' => 'expire',
+            default => 'pending',
+        };
+    }
+
+    /**
+     * Menyimpan atau memperbarui data pembayaran berdasarkan order Midtrans.
+     *
+     * @param string $midtransOrderId
+     * @param array $data
+     * @return void
+     */
+    protected function simpanDataPembayaran(string $midtransOrderId, array $data): void
+    {
+        Pembayaran::updateOrCreate(
+            ['id_transaksi_midtrans' => $midtransOrderId],
+            $data
+        );
     }
 
     /**
@@ -97,9 +128,21 @@ class PaymentController extends Controller
             }
 
             $charge = CoreApi::charge($params);
+            $midtransOrderId = $charge->order_id ?? $orderId;
+            $statusPembayaran = $this->mapPembayaranStatus($charge->transaction_status ?? null);
+
+            $this->simpanDataPembayaran($midtransOrderId, [
+                'user_id' => $pesanan->user_id,
+                'id_pesanan' => $pesanan->id,
+                'channel_pembayaran' => $bank,
+                'status_pembayaran' => $statusPembayaran,
+                'jumlah_pembayaran' => (int) ($charge->gross_amount ?? $grossAmount),
+                'token_pembayaran' => null,
+                'waktu_dibayar' => $statusPembayaran === 'settlement' ? now() : null,
+            ]);
 
             return response()->json([
-                'order_id' => $charge->order_id ?? $orderId,
+                'order_id' => $midtransOrderId,
                 'transaction_status' => $charge->transaction_status ?? null,
                 'va_numbers' => $charge->va_numbers ?? [],
                 'permata_va_number' => $charge->permata_va_number ?? null,
@@ -120,6 +163,16 @@ class PaymentController extends Controller
         ]);
 
         $token = Snap::getSnapToken($params);
+
+        $this->simpanDataPembayaran($orderId, [
+            'user_id' => $pesanan->user_id,
+            'id_pesanan' => $pesanan->id,
+            'channel_pembayaran' => $paymentType ?: 'snap',
+            'status_pembayaran' => 'pending',
+            'jumlah_pembayaran' => $grossAmount,
+            'token_pembayaran' => $token,
+            'waktu_dibayar' => null,
+        ]);
 
         return response()->json([
             'token' => $token,
@@ -194,6 +247,27 @@ class PaymentController extends Controller
         } elseif ($transactionStatus === 'pending') {
             $pesanan->update(['status_pesanan' => 'menunggu_pembayaran']);
         }
+
+        $statusPembayaran = $this->mapPembayaranStatus($transactionStatus);
+        $existingPembayaran = Pembayaran::where('id_transaksi_midtrans', $orderId)->first();
+        $amountValue = $amount;
+        if ($amountValue === null) {
+            $pesanan->loadMissing('paketTour');
+            $amountValue = (int) (($pesanan->paketTour->harga_per_peserta ?? 0) * ($pesanan->jumlah_peserta ?? 1));
+        }
+        $waktuDibayar = $statusPembayaran === 'settlement'
+            ? ($existingPembayaran?->waktu_dibayar ?? now())
+            : null;
+
+        $this->simpanDataPembayaran($orderId, [
+            'user_id' => $pesanan->user_id,
+            'id_pesanan' => $pesanan->id,
+            'channel_pembayaran' => $existingPembayaran?->channel_pembayaran,
+            'status_pembayaran' => $statusPembayaran,
+            'jumlah_pembayaran' => (int) ($amountValue ?? 0),
+            'token_pembayaran' => $existingPembayaran?->token_pembayaran,
+            'waktu_dibayar' => $waktuDibayar,
+        ]);
 
         return response()->json([
             'transaction_status' => $transactionStatus,

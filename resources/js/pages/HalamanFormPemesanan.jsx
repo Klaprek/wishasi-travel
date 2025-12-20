@@ -32,7 +32,7 @@ const HalamanFormPemesanan = () => {
 
     const closeModal = () => navigate(`/paket/${id}`);
 
-    return (
+    const tampilFormPemesanan = () => (
         <div
             className="fixed inset-0 z-40 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm px-4 py-8"
             role="dialog"
@@ -100,6 +100,8 @@ const HalamanFormPemesanan = () => {
             </div>
         </div>
     );
+
+    return tampilFormPemesanan();
 };
 
 export default HalamanFormPemesanan;

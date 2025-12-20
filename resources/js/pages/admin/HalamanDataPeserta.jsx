@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../lib/api';
 import useFetch from '../../hooks/useFetch';
 
 export default function HalamanDataPeserta() {
     const { id } = useParams();
-    const { data: pesanan, loading, error, refetch } = useFetch(`/admin/pesanan/${id}`);
+    const navigate = useNavigate();
+    const { data: pesanan, loading, error, refetch } = useFetch(`/admin/pesanan/${id}/peserta`);
     const [processing, setProcessing] = useState(false);
     const [alasan, setAlasan] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const tampiPesan = (pesan) => setErrorMessage(pesan);
 
     const buildStorageUrl = (path) => {
         if (!path) return null;
@@ -37,7 +39,8 @@ export default function HalamanDataPeserta() {
         setErrorMessage('');
         try {
             await api.put(`/admin/pesanan/${id}/verify`);
-            refetch();
+            const paketId = pesanan?.paket_tour?.id ?? pesanan?.paket_id;
+            navigate(paketId ? `/admin/pesanan/paket/${paketId}` : '/admin/pesanan');
         } catch (err) {
             setErrorMessage(err.response?.data?.message || 'Gagal memverifikasi pesanan');
         } finally {
@@ -47,14 +50,15 @@ export default function HalamanDataPeserta() {
 
     const rejectPesanan = async () => {
         if (!alasan.trim()) {
-            setErrorMessage('Alasan penolakan wajib diisi');
+            tampiPesan('Harap isi alasan penolakan');
             return;
         }
         setProcessing(true);
         setErrorMessage('');
         try {
             await api.put(`/admin/pesanan/${id}/reject`, { alasan_penolakan: alasan });
-            refetch();
+            const paketId = pesanan?.paket_tour?.id ?? pesanan?.paket_id;
+            navigate(paketId ? `/admin/pesanan/paket/${paketId}` : '/admin/pesanan');
         } catch (err) {
             setErrorMessage(err.response?.data?.message || 'Gagal menolak pesanan');
         } finally {
@@ -67,7 +71,7 @@ export default function HalamanDataPeserta() {
 
     const pesertaList = pesanan?.pesertas ?? [];
 
-    return (
+    const tampilHalamanDataPesrta = () => (
         <div className="space-y-6 pt-6 pb-10">
             <div>
                 <p className="text-sm uppercase tracking-[0.2em] text-indigo-600 font-semibold">Halaman Data Peserta</p>
@@ -150,4 +154,6 @@ export default function HalamanDataPeserta() {
             </div>
         </div>
     );
+
+    return tampilHalamanDataPesrta();
 }

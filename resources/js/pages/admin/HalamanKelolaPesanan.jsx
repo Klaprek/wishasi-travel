@@ -21,9 +21,11 @@ export default function HalamanKelolaPesanan() {
                 });
             });
 
+        const verifiedStatuses = new Set(['menunggu_pembayaran', 'pembayaran_selesai', 'pesanan_selesai']);
         (pesanan ?? []).forEach((order) => {
             const paketId = order.paket_tour?.id;
             if (!paketId || !paketMap.has(paketId)) return;
+            if (!verifiedStatuses.has(order.status_pesanan)) return;
             const totalPeserta = (order.pesertas ?? []).length;
             paketMap.get(paketId).totalTerverifikasi += totalPeserta;
         });
@@ -34,7 +36,7 @@ export default function HalamanKelolaPesanan() {
     const loading = loadingPesanan || loadingPaket;
     const error = errorPesanan || errorPaket;
 
-    return (
+    const tampilHalamanKelolaPesanan = () => (
         <div className="space-y-6 pt-6 pb-10">
             <div>
                 <p className="text-sm uppercase tracking-[0.2em] text-indigo-600 font-semibold">Halaman Kelola Pesanan</p>
@@ -90,4 +92,6 @@ export default function HalamanKelolaPesanan() {
             </div>
         </div>
     );
+
+    return tampilHalamanKelolaPesanan();
 }

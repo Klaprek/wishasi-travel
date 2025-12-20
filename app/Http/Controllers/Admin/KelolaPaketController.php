@@ -9,35 +9,23 @@ use Illuminate\Http\Request;
 /**
  * Controller untuk mengelola CRUD paket tour di area admin.
  */
-class PaketTourController extends Controller
+class KelolaPaketController extends Controller
 {
     /**
-     * Menampilkan daftar paket tour.
+     * Mengambil data paket tour untuk admin.
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
      */
-    public function index(Request $request)
+    public function ambilDataPaket(Request $request)
     {
         $paket = PaketTour::all();
 
         if ($request->expectsJson()) {
-            return response()->json(['data' => $paket]);
-        }
-
-        return view('app');
-    }
-
-    /**
-     * Menampilkan form create atau respon JSON siap pakai.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
-     */
-    public function create(Request $request)
-    {
-        if ($request->expectsJson()) {
-            return response()->json(['message' => 'ok']);
+            return response()->json([
+                'message' => 'Data paket',
+                'data' => $paket,
+            ]);
         }
 
         return view('app');
@@ -49,7 +37,7 @@ class PaketTourController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function simpanDataPaket(Request $request)
     {
         $request->validate([
             'nama_paket' => 'required',
@@ -101,7 +89,7 @@ class PaketTourController extends Controller
      * @param PaketTour $paketTour
      * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
      */
-    public function edit(Request $request, PaketTour $paketTour)
+    public function ambilDataDetail(Request $request, PaketTour $paketTour)
     {
         if ($request->expectsJson()) {
             return response()->json(['data' => $paketTour]);
@@ -117,7 +105,7 @@ class PaketTourController extends Controller
      * @param PaketTour $paketTour
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, PaketTour $paketTour)
+    public function editDataPaket(Request $request, PaketTour $paketTour)
     {
         $request->validate([
             'nama_paket' => 'required',
@@ -171,7 +159,7 @@ class PaketTourController extends Controller
      * @param PaketTour $paketTour
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function destroy(PaketTour $paketTour)
+    public function hapusDataPaket(PaketTour $paketTour)
     {
         $paketTour->delete();
 
@@ -188,7 +176,7 @@ class PaketTourController extends Controller
      * @param PaketTour $paketTour
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function hide(PaketTour $paketTour)
+    public function menyembunyikanDataPaket(PaketTour $paketTour)
     {
         $paketTour->update(['tampil_di_katalog' => false]);
 
@@ -205,7 +193,7 @@ class PaketTourController extends Controller
      * @param PaketTour $paketTour
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function showPaket(PaketTour $paketTour)
+    public function tampilkanDataPaket(PaketTour $paketTour)
     {
         $paketTour->update(['tampil_di_katalog' => true]);
 

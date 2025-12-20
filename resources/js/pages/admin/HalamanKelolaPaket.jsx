@@ -46,7 +46,23 @@ export default function HalamanKelolaPaket() {
         }
     };
 
-    return (
+    const tampilPesan = (pesan) => (
+        <div className="flex items-center justify-between gap-4 text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">
+            <span>{pesan}</span>
+            <button
+                type="button"
+                onClick={() => setNotice(null)}
+                className="text-emerald-700 hover:text-emerald-900 font-semibold"
+                aria-label="Tutup pesan"
+            >
+                x
+            </button>
+        </div>
+    );
+
+    const tampilPesanPaketDiperbarui = () => tampilPesan('Paket berhasil diperbarui');
+
+    const tampilHalamanKelolaPaket = () => (
         <div className="space-y-6 pt-6 pb-10">
             <div className="flex items-center justify-between">
                 <div>
@@ -63,19 +79,10 @@ export default function HalamanKelolaPaket() {
 
             {loading && <p className="text-slate-600">Memuat paket...</p>}
             {error && <p className="text-red-600">Gagal memuat paket</p>}
-            {notice && (
-                <div className="flex items-center justify-between gap-4 text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">
-                    <span>{notice}</span>
-                    <button
-                        type="button"
-                        onClick={() => setNotice(null)}
-                        className="text-emerald-700 hover:text-emerald-900 font-semibold"
-                        aria-label="Tutup pesan"
-                    >
-                        x
-                    </button>
-                </div>
-            )}
+            {notice &&
+                (notice === 'Paket berhasil diperbarui'
+                    ? tampilPesanPaketDiperbarui()
+                    : tampilPesan(notice))}
 
             <div className="bg-white border border-slate-200 shadow rounded-2xl overflow-hidden">
                 <table className="min-w-full divide-y divide-slate-200">
@@ -148,4 +155,6 @@ export default function HalamanKelolaPaket() {
             </div>
         </div>
     );
+
+    return tampilHalamanKelolaPaket();
 }

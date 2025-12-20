@@ -20,6 +20,17 @@ class PesananController extends Controller
      */
     public function index(Request $request)
     {
+        return $this->ambilDataPesanan($request);
+    }
+
+    /**
+     * Mengambil data pesanan milik pengguna.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
+     */
+    public function ambilDataPesanan(Request $request)
+    {
         $userId = $request->user()->id;
 
         $pesanan = Pesanan::where('user_id', $userId)
@@ -45,7 +56,7 @@ class PesananController extends Controller
      * @param PaketTour|null $paketTour
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request, PaketTour $paketTour = null)
+    public function simpanDataPesanan(Request $request, PaketTour $paketTour = null)
     {
         $request->validate([
             'jumlah_peserta' => 'required|integer|min:1'

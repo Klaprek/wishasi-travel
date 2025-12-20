@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
-use Illuminate\View\View;
 use Laravel\Socialite\Facades\Socialite;
 
 /**
@@ -19,21 +18,6 @@ use Laravel\Socialite\Facades\Socialite;
  */
 class AuthController extends Controller
 {
-    /**
-     * Display the login view.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse|View
-     */
-    public function tampilHalamanLogin(Request $request)
-    {
-        if ($request->expectsJson()) {
-            return response()->json(['message' => 'ok']);
-        }
-
-        return view('app');
-    }
-
     /**
      * Handle an incoming authentication request.
      *
@@ -112,6 +96,17 @@ class AuthController extends Controller
     }
 
     /**
+     * Mengambil data user yang sedang login.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function ambilDataUser(Request $request)
+    {
+        return response()->json(['data' => $request->user()]);
+    }
+
+    /**
      * Redirect ke halaman otorisasi Google.
      *
      * @return \Illuminate\Http\RedirectResponse
@@ -136,20 +131,7 @@ class AuthController extends Controller
             ]);
         }
 
-        $user = User::firstOrCreate(
-            ['email' => $googleUser->getEmail()],
-            [
-                'name' => $googleUser->getName() ?? $googleUser->getNickname() ?? 'Pengguna',
-                'password' => Str::random(40),
-                'role' => 'customer',
-            ]
-        );
-
-        // Pastikan nama terbarui jika berubah di Google
-        if ($googleUser->getName() && $googleUser->getName() !== $user->name) {
-            $user->name = $googleUser->getName();
-            $user->save();
-        }
+        $user = $this->ambilAtauBuatUserGoogle($googleUser);
 
         Auth::login($user, remember: true);
 
@@ -162,5 +144,24 @@ class AuthController extends Controller
         }
 
         return redirect()->intended(route('dashboard', absolute: false));
+    }
+
+    protected function ambilAtauBuatUserGoogle($googleUser)
+    {
+        $user = User::firstOrCreate(
+            ['email' => $googleUser->getEmail()],
+            [
+                'name' => $googleUser->getName() ?? $googleUser->getNickname() ?? 'Pengguna',
+                'password' => Str::random(40),
+                'role' => 'customer',
+            ]
+        );
+
+        if ($googleUser->getName() && $googleUser->getName() !== $user->name) {
+            $user->name = $googleUser->getName();
+            $user->save();
+        }
+
+        return $user;
     }
 }

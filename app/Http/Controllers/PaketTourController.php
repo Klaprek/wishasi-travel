@@ -19,11 +19,15 @@ class PaketTourController extends Controller
      */
     public function ambilDataPaket(Request $request)
     {
-        if (auth()->check() && in_array(auth()->user()->role, ['admin', 'owner'], true) && ! $request->expectsJson()) {
+        if (auth()->check()
+            && in_array(auth()->user()->role, ['admin', 'owner'], true)
+            && ! $request->expectsJson()
+            && ! $request->routeIs('admin.*')
+        ) {
             return redirect(auth()->user()->role === 'owner' ? '/owner/rekapitulasi' : '/admin/paket');
         }
 
-        // hanya tampilkan paket aktif
+        // publik hanya melihat paket yang tampil di katalog
         $paket = PaketTour::where('tampil_di_katalog', true)->get();
 
         if ($request->expectsJson()) {

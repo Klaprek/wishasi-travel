@@ -13,6 +13,7 @@ const MenuProfil = () => {
     const [passwordSaving, setPasswordSaving] = useState(false);
     const [passwordMessage, setPasswordMessage] = useState(null);
     const [passwordError, setPasswordError] = useState(null);
+    const tampilPesan = (pesan) => setPasswordError(pesan);
 
     useEffect(() => {
         const load = async () => {
@@ -33,9 +34,13 @@ const MenuProfil = () => {
 
     const submitPassword = async (e) => {
         e.preventDefault();
-        setPasswordSaving(true);
         setPasswordMessage(null);
         setPasswordError(null);
+        if (passwordForm.password !== passwordForm.password_confirmation) {
+            tampilPesan('Password konfirmasi tidak sama');
+            return;
+        }
+        setPasswordSaving(true);
         try {
             const response = await api.put('/password', passwordForm);
             setPasswordMessage(response.data.message ?? 'Password diperbarui');
@@ -45,15 +50,18 @@ const MenuProfil = () => {
                 password_confirmation: '',
             });
         } catch (err) {
+            const currentPasswordErrors = err.response?.data?.errors?.current_password;
+            if (currentPasswordErrors && currentPasswordErrors.length > 0) {
+                tampilPesan('Pasword lama tidak benar');
+                return;
+            }
             setPasswordError(err.response?.data?.message || 'Gagal memperbarui password');
         } finally {
             setPasswordSaving(false);
         }
     };
 
-    if (loading) return <p className="text-slate-600">Memuat profil...</p>;
-
-    return (
+    const tampilMenuProfil = () => (
         <div className="pt-6 pb-10 px-4 sm:px-0">
             <div className="max-w-xl mx-auto bg-white border border-slate-200 rounded-3xl shadow p-6 space-y-5">
                 <div>
@@ -150,6 +158,10 @@ const MenuProfil = () => {
             </div>
         </div>
     );
+
+    if (loading) return <p className="text-slate-600">Memuat profil...</p>;
+
+    return tampilMenuProfil();
 };
 
 export default MenuProfil;

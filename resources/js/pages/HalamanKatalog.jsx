@@ -59,7 +59,7 @@ const HalamanKatalog = () => {
         );
     };
 
-    return (
+    const tampilHalamanKatalog = () => (
         <div className="space-y-16">
             <section
                 id="hero-section"
@@ -580,6 +580,8 @@ const HalamanKatalog = () => {
             </section>
         </div>
     );
+
+    return tampilHalamanKatalog();
 };
 
 export default HalamanKatalog;

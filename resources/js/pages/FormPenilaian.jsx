@@ -24,13 +24,13 @@ export default function FormPenilaian() {
                 ulasan,
             });
             setMessage(response.data.message ?? 'Rating tersimpan');
-            navigate('/pesanan-saya?status=pesanan_selesai');
+            navigate('/');
         } catch (err) {
             const status = err.response?.status;
             const msg = err.response?.data?.message || 'Gagal menyimpan rating';
             setError(msg);
             if (status === 409) {
-                navigate('/pesanan-saya?status=pesanan_selesai');
+                navigate('/');
             }
         } finally {
             setSaving(false);

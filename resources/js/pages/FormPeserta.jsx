@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import api from '../lib/api';
-import useFetch from '../hooks/useFetch';
 
 const FormPeserta = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { data: pesananData, loading } = useFetch(`/pesanan/${id}/peserta`);
+    const { state } = useLocation();
+    const pesananData = state?.pesanan ?? null;
     const pesertaCount = pesananData?.jumlah_peserta ?? 1;
     const wajibIdentitas = Boolean(pesananData?.paket_tour?.wajib_identitas);
     const wajibPaspor = Boolean(pesananData?.paket_tour?.wajib_paspor);
@@ -53,7 +53,7 @@ const FormPeserta = () => {
             await api.post(`/pesanan/${id}/peserta`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
-            navigate('/pesanan-saya');
+            navigate('/pesanan-saya?status=menunggu_verifikasi');
         } catch (err) {
             setError(err.response?.data?.message || 'Gagal menyimpan data peserta');
         } finally {
@@ -61,9 +61,25 @@ const FormPeserta = () => {
         }
     };
 
-    if (loading) return <p className="text-slate-600">Memuat form peserta...</p>;
+    if (!pesananData) {
+        return (
+            <div className="space-y-4 pt-6 pb-6 px-4 sm:px-6 lg:px-0 max-w-3xl mx-auto">
+                <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-sm">
+                    <p className="text-sm text-slate-600">
+                        Data pesanan tidak tersedia. Silakan kembali ke halaman pesanan.
+                    </p>
+                    <button
+                        onClick={() => navigate('/pesanan-saya')}
+                        className="mt-4 px-4 py-2 text-sm font-semibold text-indigo-700 border border-indigo-200 rounded-lg hover:bg-indigo-50"
+                    >
+                        Kembali ke Pesanan Saya
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
-    return (
+    const tampilFormPeserta = () => (
         <div className="space-y-6 pt-6 pb-6 px-4 sm:px-6 lg:px-0 max-w-4xl mx-auto">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="space-y-1">
@@ -171,6 +187,8 @@ const FormPeserta = () => {
             </form>
         </div>
     );
+
+    return tampilFormPeserta();
 };
 
 export default FormPeserta;

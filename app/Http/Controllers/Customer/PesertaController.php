@@ -14,35 +14,13 @@ use Illuminate\Validation\Rule;
 class PesertaController extends Controller
 {
     /**
-     * Menampilkan form/JSON untuk melengkapi data peserta.
-     *
-     * @param Request $request
-     * @param Pesanan $pesanan
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
-     */
-    public function create(Request $request, Pesanan $pesanan)
-    {
-        if ($pesanan->user_id !== $request->user()->id) {
-            abort(403);
-        }
-
-        $pesanan->load('paketTour', 'pesertas');
-
-        if ($request->expectsJson()) {
-            return response()->json(['data' => $pesanan]);
-        }
-
-        return view('app');
-    }
-
-    /**
      * Menyimpan data peserta sesuai aturan paket tour.
      *
      * @param Request $request
      * @param Pesanan $pesanan
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request, Pesanan $pesanan)
+    public function simpanDataPeserta(Request $request, Pesanan $pesanan)
     {
         if ($pesanan->user_id !== $request->user()->id) {
             abort(403);

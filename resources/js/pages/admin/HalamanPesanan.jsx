@@ -29,7 +29,7 @@ export default function HalamanPesanan() {
         return orders[0]?.paket_tour;
     }, [orders, paketDetail, state?.paket]);
 
-    return (
+    const tampilHalamanPesanan = () => (
         <div className="space-y-6 pt-6 pb-10">
             <div className="flex items-start justify-between gap-4">
                 <div>
@@ -115,4 +115,6 @@ export default function HalamanPesanan() {
             </div>
         </div>
     );
+
+    return tampilHalamanPesanan();
 }

@@ -27,6 +27,7 @@ export default function FormDataPaket() {
     });
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
+    const tampilPesan = (pesan) => setError(pesan);
     const formatDateInput = (value) => {
         if (!value) return '';
         const raw = String(value);
@@ -68,7 +69,7 @@ export default function FormDataPaket() {
         ];
         const hasEmptyRequired = requiredFields.some((field) => String(form[field] ?? '').trim() === '');
         if (hasEmptyRequired || (!isEdit && !form.banner)) {
-            setError('Harap isi semua data');
+            tampilPesan('Harap isi semua data');
             return;
         }
         setSaving(true);
@@ -92,7 +93,7 @@ export default function FormDataPaket() {
             } else {
                 await api.post('/admin/paket', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
             }
-            const successMessage = isEdit ? 'Paket berhasil diperbarui' : 'Paket berhasil di tambah';
+            const successMessage = isEdit ? 'Paket berhasil diperbarui' : 'Paket berhasil ditambahkan';
             navigate('/admin/paket', { state: { successMessage } });
         } catch (err) {
             setError(err.response?.data?.message || 'Gagal menyimpan paket');
@@ -101,7 +102,7 @@ export default function FormDataPaket() {
         }
     };
 
-    return (
+    const tampilFormPengisianData = () => (
         <div className="max-w-4xl mx-auto space-y-6 pt-6 pb-10">
             <div>
                 <p className="text-sm uppercase tracking-[0.2em] text-indigo-600 font-semibold">Form Data Paket</p>
@@ -223,4 +224,6 @@ export default function FormDataPaket() {
             </form>
         </div>
     );
+
+    return tampilFormPengisianData();
 }

@@ -19,7 +19,7 @@ class RatingController extends Controller
      * @param Pesanan $pesanan
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request, Pesanan $pesanan)
+    public function menyimpanRating(Request $request, Pesanan $pesanan)
     {
         $request->validate([
             'nilai_rating' => 'required|integer|min:1|max:5',

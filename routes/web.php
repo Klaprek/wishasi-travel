@@ -12,9 +12,8 @@ use App\Http\Controllers\Customer\PesertaController;
 use App\Http\Controllers\Customer\RatingController;
 
 // Admin controllers
-use App\Http\Controllers\Admin\PaketTourController as AdminPaketController;
-use App\Http\Controllers\Admin\PesananController as PesananControllerAdmin;
-use App\Http\Controllers\Admin\PesertaController as PesertaControllerAdmin;
+use App\Http\Controllers\Admin\KelolaPaketController;
+use App\Http\Controllers\Admin\KelolaPesananController;
 
 // Owner controllers
 use App\Http\Controllers\Owner\RekapitulasiController;
@@ -55,9 +54,7 @@ Route::get('/dashboard', function () {
 // -----------------------------------------------------
 
 Route::middleware('auth')->group(function () {
-    Route::get('/api/me', function (Request $request) {
-        return response()->json(['data' => $request->user()]);
-    });
+    Route::get('/api/me', [AuthController::class, 'ambilDataUser']);
 });
 
 
@@ -68,13 +65,15 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:customer'])->group(function () {
 
     Route::get('/pesanan-saya', [PesananController::class, 'index']);
-    Route::post('/pesan/{paketTour}', [PesananController::class, 'store']);
+    Route::post('/pesan/{paketTour}', [PesananController::class, 'simpanDataPesanan']);
 
-    Route::get('/pesanan/{pesanan}/peserta', [PesertaController::class, 'create']);
-    Route::post('/pesanan/{pesanan}/peserta', [PesertaController::class, 'store']);
+    Route::get('/pesanan/{pesanan}/peserta', function () {
+        return view('app');
+    });
+    Route::post('/pesanan/{pesanan}/peserta', [PesertaController::class, 'simpanDataPeserta']);
     Route::post('/pesanan/{pesanan}/selesai', [PesananController::class, 'markSelesai']);
 
-    Route::post('/pesanan/{pesanan}/rating', [RatingController::class, 'store'])
+    Route::post('/pesanan/{pesanan}/rating', [RatingController::class, 'menyimpanRating'])
         ->name('rating.store');
 
     Route::post('/payments/{pesanan}/snap-token', [PaymentController::class, 'createSnapToken']);
@@ -93,23 +92,36 @@ Route::middleware(['auth','role:admin'])
     ->group(function () {
 
         // resource route untuk kelola paket
-        Route::resource('paket', AdminPaketController::class)
+        Route::get('/paket', [KelolaPaketController::class, 'ambilDataPaket'])
+            ->name('paket.index');
+        Route::post('/paket', [KelolaPaketController::class, 'simpanDataPaket'])
+            ->name('paket.store');
+        Route::put('/paket/{paketTour}', [KelolaPaketController::class, 'editDataPaket'])
+            ->name('paket.update');
+        Route::get('/paket/{paketTour}/edit', [KelolaPaketController::class, 'ambilDataDetail'])
+            ->name('paket.edit');
+        Route::delete('/paket/{paketTour}', [KelolaPaketController::class, 'hapusDataPaket'])
+            ->name('paket.destroy');
+        Route::resource('paket', KelolaPaketController::class)
+            ->except(['index', 'store', 'edit', 'create', 'update', 'destroy'])
             ->parameters(['paket' => 'paketTour']);
 
         // hide & show paket
-        Route::put('/paket/{paketTour}/hide', [AdminPaketController::class, 'hide'])
+        Route::put('/paket/{paketTour}/hide', [KelolaPaketController::class, 'menyembunyikanDataPaket'])
             ->name('paket.hide');
-        Route::put('/paket/{paketTour}/show', [AdminPaketController::class, 'showPaket'])
+        Route::put('/paket/{paketTour}/show', [KelolaPaketController::class, 'tampilkanDataPaket'])
             ->name('paket.visible');
 
         // kelola pesanan
-        Route::get('/pesanan', [PesananControllerAdmin::class, 'index'])->name('pesanan.index');
-        Route::get('/pesanan/{pesanan}', [PesananControllerAdmin::class, 'show'])->name('pesanan.show');
+        Route::get('/pesanan', [KelolaPesananController::class, 'ambilDataPesanan'])->name('pesanan.index');
+        Route::get('/pesanan/{pesanan}', [KelolaPesananController::class, 'ambilDetailPesanan'])->name('pesanan.show');
+        Route::get('/pesanan/{pesanan}/peserta', [KelolaPesananController::class, 'ambilDataPeserta'])
+            ->name('pesanan.peserta');
 
         // verifikasi peserta
-        Route::put('/pesanan/{pesanan}/verify', [PesertaControllerAdmin::class, 'verify'])
+        Route::put('/pesanan/{pesanan}/verify', [KelolaPesananController::class, 'verifikasiPesanan'])
             ->name('pesanan.verify');
-        Route::put('/pesanan/{pesanan}/reject', [PesertaControllerAdmin::class, 'reject'])
+        Route::put('/pesanan/{pesanan}/reject', [KelolaPesananController::class, 'tolakPesanan'])
             ->name('pesanan.reject');
     });
 
@@ -119,7 +131,7 @@ Route::middleware(['auth','role:admin'])
 // -----------------------------------------------------
 
 Route::middleware(['auth', 'role:owner'])->group(function () {
-    Route::get('/owner/rekapitulasi', [RekapitulasiController::class, 'index'])
+    Route::get('/owner/rekapitulasi', [RekapitulasiController::class, 'ambilDataRekap'])
         ->name('owner.rekapitulasi');
 });
 

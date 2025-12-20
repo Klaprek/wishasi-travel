@@ -36,7 +36,7 @@ const HalamanDetail = ({ prefetchedPaket = null, disableRedirect = false }) => {
         .map((d) => d.trim())
         .filter(Boolean);
 
-    return (
+    const tampilHalamanDetail = () => (
         <div className="space-y-6 pt-6 pb-10">
             <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
                 <div
@@ -196,6 +196,8 @@ const HalamanDetail = ({ prefetchedPaket = null, disableRedirect = false }) => {
             </div>
         </div>
     );
+
+    return tampilHalamanDetail();
 };
 
 export default HalamanDetail;
