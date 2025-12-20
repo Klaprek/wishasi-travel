@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
-use App\Models\Pesanan;
-use App\Models\Rating;
+use App\Models\pesanan;
+use App\Models\rating;
 use Illuminate\Http\Request;
 
 /**
@@ -20,7 +20,7 @@ class RekapitulasiController extends Controller
      */
     public function ambilDataRekap(Request $request)
     {
-        $query = Pesanan::with(['paketTour', 'user', 'pembayarans'])
+        $query = pesanan::with(['paketTour', 'user', 'pembayarans'])
             ->where('status_pesanan', 'pembayaran_selesai');
 
         if ($request->filled('bulan')) {
@@ -34,7 +34,7 @@ class RekapitulasiController extends Controller
         $pesanan = $query->get();
         $pesananIds = $pesanan->pluck('id');
         $ratingRata = $pesananIds->isNotEmpty()
-            ? (float) Rating::whereIn('pesanan_id', $pesananIds)->avg('nilai_rating')
+            ? (float) rating::whereIn('pesanan_id', $pesananIds)->avg('nilai_rating')
             : null;
 
         $rekap = $pesanan->groupBy('paket_id')->map(function ($items) {
@@ -42,7 +42,7 @@ class RekapitulasiController extends Controller
             $detail = $items->map(function ($pesanan) {
                 $pembayaran = $pesanan->pembayarans
                     ->sortByDesc(function ($item) {
-                        return $item->waktu_dibayar ?? $item->waktu_dibuat ?? $item->id_pembayaran;
+                        return $item->waktu_dibayar ?? $item->created_at ?? $item->id_pembayaran;
                     })
                     ->first();
 

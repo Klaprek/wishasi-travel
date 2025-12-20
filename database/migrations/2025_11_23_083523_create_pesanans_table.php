@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pesanans', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('paket_id')->constrained('paket_tours')->onDelete('cascade');
+        Schema::create('pesanan', function (Blueprint $table) {
+            $table->string('id', 24)->primary();
+            $table->foreignId('user_id')->constrained('user')->onDelete('cascade');
+            $table->foreignId('paket_id')->constrained('pakettour')->onDelete('cascade');
             $table->integer('jumlah_peserta');
             $table->enum('status_pesanan', [
                 'menunggu_verifikasi',
@@ -24,7 +24,6 @@ return new class extends Migration
                 'pesanan_ditolak'
             ])->default('menunggu_verifikasi');
             $table->text('alasan_penolakan')->nullable();
-            $table->timestamp('tanggal_pemesanan')->useCurrent();
             $table->timestamps();
         });
     }
@@ -34,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pesanans');
+        Schema::dropIfExists('pesanan');
     }
 };

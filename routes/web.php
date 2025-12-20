@@ -64,7 +64,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'role:customer'])->group(function () {
 
-    Route::get('/pesanan-saya', [PesananController::class, 'index']);
+    Route::get('/pesanan-saya', [PesananController::class, 'ambilDataPesanan']);
     Route::post('/pesan/{paketTour}', [PesananController::class, 'simpanDataPesanan']);
 
     Route::get('/pesanan/{pesanan}/peserta', function () {

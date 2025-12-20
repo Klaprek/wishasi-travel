@@ -35,6 +35,12 @@ const HalamanDetail = ({ prefetchedPaket = null, disableRedirect = false }) => {
         .split(/\r?\n/)
         .map((d) => d.trim())
         .filter(Boolean);
+    const kuotaTotal = paket.kuota;
+    const kuotaTersisa = paket.sisa_kuota ?? kuotaTotal;
+    const kuotaLabel =
+        kuotaTotal != null && kuotaTotal !== ""
+            ? `${kuotaTersisa}/${kuotaTotal}`
+            : "-";
 
     const tampilHalamanDetail = () => (
         <div className="space-y-6 pt-6 pb-10">
@@ -100,7 +106,7 @@ const HalamanDetail = ({ prefetchedPaket = null, disableRedirect = false }) => {
                                 Kuota
                             </p>
                             <p className="text-lg font-semibold text-slate-900">
-                                {paket.kuota ?? "-"} peserta
+                                {kuotaLabel} peserta
                             </p>
                         </div>
                     </div>

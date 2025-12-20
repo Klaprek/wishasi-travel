@@ -17,6 +17,7 @@ export default function HalamanKelolaPesanan() {
                     nama_paket: p.nama_paket,
                     jadwal_keberangkatan: p.jadwal_keberangkatan,
                     kuota: p.kuota,
+                    sisa_kuota: p.sisa_kuota ?? p.kuota,
                     totalTerverifikasi: 0,
                 });
             });
@@ -68,7 +69,9 @@ export default function HalamanKelolaPesanan() {
                                     {item.jadwal_keberangkatan ? formatTanggalIndo(item.jadwal_keberangkatan) : '-'}
                                 </td>
                                 <td className="px-6 py-4 text-sm text-slate-700">{item.totalTerverifikasi} peserta</td>
-                                <td className="px-6 py-4 text-sm text-slate-700">{item.kuota ?? '-'}</td>
+                                <td className="px-6 py-4 text-sm text-slate-700">
+                                    {item.kuota != null ? `${item.sisa_kuota}/${item.kuota}` : '-'}
+                                </td>
                                 <td className="px-6 py-4 text-right">
                                     <Link
                                         to={`/admin/pesanan/paket/${item.id}`}

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pesanan;
-use App\Models\Pembayaran;
+use App\Models\pesanan;
+use App\Models\pembayaran;
 use Illuminate\Http\Request;
 use Midtrans\Config as MidtransConfig;
 use Midtrans\Snap;
@@ -52,7 +52,7 @@ class PaymentController extends Controller
      */
     protected function simpanDataPembayaran(string $midtransOrderId, array $data): void
     {
-        Pembayaran::updateOrCreate(
+        pembayaran::updateOrCreate(
             ['id_transaksi_midtrans' => $midtransOrderId],
             $data
         );
@@ -62,10 +62,10 @@ class PaymentController extends Controller
      * Membuat Snap token atau charge VA langsung untuk pesanan.
      *
      * @param Request $request
-     * @param Pesanan $pesanan
+     * @param pesanan $pesanan
      * @return \Illuminate\Http\JsonResponse
      */
-    public function createSnapToken(Request $request, Pesanan $pesanan)
+    public function createSnapToken(Request $request, pesanan $pesanan)
     {
         $user = $request->user();
 
@@ -137,7 +137,6 @@ class PaymentController extends Controller
                 'channel_pembayaran' => $bank,
                 'status_pembayaran' => $statusPembayaran,
                 'jumlah_pembayaran' => (int) ($charge->gross_amount ?? $grossAmount),
-                'token_pembayaran' => null,
                 'waktu_dibayar' => $statusPembayaran === 'settlement' ? now() : null,
             ]);
 
@@ -170,7 +169,6 @@ class PaymentController extends Controller
             'channel_pembayaran' => $paymentType ?: 'snap',
             'status_pembayaran' => 'pending',
             'jumlah_pembayaran' => $grossAmount,
-            'token_pembayaran' => $token,
             'waktu_dibayar' => null,
         ]);
 
@@ -185,10 +183,10 @@ class PaymentController extends Controller
      * Mengonfirmasi status pembayaran secara manual.
      *
      * @param Request $request
-     * @param Pesanan $pesanan
+     * @param pesanan $pesanan
      * @return \Illuminate\Http\JsonResponse
      */
-    public function confirm(Request $request, Pesanan $pesanan)
+    public function confirm(Request $request, pesanan $pesanan)
     {
         $user = $request->user();
 
@@ -218,10 +216,10 @@ class PaymentController extends Controller
      * Mengecek status transaksi ke Midtrans dan memperbarui pesanan.
      *
      * @param Request $request
-     * @param Pesanan $pesanan
+     * @param pesanan $pesanan
      * @return \Illuminate\Http\JsonResponse
      */
-    public function status(Request $request, Pesanan $pesanan)
+    public function status(Request $request, pesanan $pesanan)
     {
         $orderId = $request->input('order_id');
 
@@ -249,7 +247,7 @@ class PaymentController extends Controller
         }
 
         $statusPembayaran = $this->mapPembayaranStatus($transactionStatus);
-        $existingPembayaran = Pembayaran::where('id_transaksi_midtrans', $orderId)->first();
+        $existingPembayaran = pembayaran::where('id_transaksi_midtrans', $orderId)->first();
         $amountValue = $amount;
         if ($amountValue === null) {
             $pesanan->loadMissing('paketTour');
@@ -265,7 +263,6 @@ class PaymentController extends Controller
             'channel_pembayaran' => $existingPembayaran?->channel_pembayaran,
             'status_pembayaran' => $statusPembayaran,
             'jumlah_pembayaran' => (int) ($amountValue ?? 0),
-            'token_pembayaran' => $existingPembayaran?->token_pembayaran,
             'waktu_dibayar' => $waktuDibayar,
         ]);
 

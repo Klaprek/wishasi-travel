@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\PaketTour;
+use App\Models\pakettour;
+use App\Models\pesanan;
 use Illuminate\Http\Request;
 
 /**
@@ -19,7 +20,11 @@ class KelolaPaketController extends Controller
      */
     public function ambilDataPaket(Request $request)
     {
-        $paket = PaketTour::all();
+        $paket = pakettour::withSum([
+            'pesanan as kuota_terpakai' => function ($query) {
+                $query->whereIn('status_pesanan', pesanan::STATUS_KUOTA_TERPAKAI);
+            },
+        ], 'jumlah_peserta')->get();
 
         if ($request->expectsJson()) {
             return response()->json([
@@ -70,7 +75,7 @@ class KelolaPaketController extends Controller
         $data['tampil_di_katalog'] = $request->boolean('tampil_di_katalog');
         $data['banner'] = $request->file('banner')->store('banners', 'public');
 
-        $paket = PaketTour::create($data);
+        $paket = pakettour::create($data);
 
         if ($request->expectsJson()) {
             return response()->json([
@@ -86,12 +91,18 @@ class KelolaPaketController extends Controller
      * Menampilkan data paket untuk diedit.
      *
      * @param Request $request
-     * @param PaketTour $paketTour
+     * @param pakettour $paketTour
      * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
      */
-    public function ambilDataDetail(Request $request, PaketTour $paketTour)
+    public function ambilDataDetail(Request $request, pakettour $paketTour)
     {
         if ($request->expectsJson()) {
+            $paketTour = pakettour::withSum([
+                'pesanan as kuota_terpakai' => function ($query) {
+                    $query->whereIn('status_pesanan', pesanan::STATUS_KUOTA_TERPAKAI);
+                },
+            ], 'jumlah_peserta')->findOrFail($paketTour->id);
+
             return response()->json(['data' => $paketTour]);
         }
 
@@ -102,10 +113,10 @@ class KelolaPaketController extends Controller
      * Memperbarui data paket tour.
      *
      * @param Request $request
-     * @param PaketTour $paketTour
+     * @param pakettour $paketTour
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function editDataPaket(Request $request, PaketTour $paketTour)
+    public function editDataPaket(Request $request, pakettour $paketTour)
     {
         $request->validate([
             'nama_paket' => 'required',
@@ -156,10 +167,10 @@ class KelolaPaketController extends Controller
     /**
      * Menghapus paket tour.
      *
-     * @param PaketTour $paketTour
+     * @param pakettour $paketTour
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function hapusDataPaket(PaketTour $paketTour)
+    public function hapusDataPaket(pakettour $paketTour)
     {
         $paketTour->delete();
 
@@ -173,10 +184,10 @@ class KelolaPaketController extends Controller
     /**
      * Menyembunyikan paket dari katalog.
      *
-     * @param PaketTour $paketTour
+     * @param pakettour $paketTour
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function menyembunyikanDataPaket(PaketTour $paketTour)
+    public function menyembunyikanDataPaket(pakettour $paketTour)
     {
         $paketTour->update(['tampil_di_katalog' => false]);
 
@@ -190,10 +201,10 @@ class KelolaPaketController extends Controller
     /**
      * Menampilkan paket di katalog.
      *
-     * @param PaketTour $paketTour
+     * @param pakettour $paketTour
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function tampilkanDataPaket(PaketTour $paketTour)
+    public function tampilkanDataPaket(pakettour $paketTour)
     {
         $paketTour->update(['tampil_di_katalog' => true]);
 

@@ -40,7 +40,7 @@ export default function FormPenilaian() {
     if (loading) return <p className="text-slate-600">Memuat form rating...</p>;
     if (loadError) return <p className="text-red-600">Gagal memuat pesanan</p>;
 
-    return (
+    const tampilFormPenilaian = () => (
         <div className="pt-6 pb-10 px-4 sm:px-0">
             <div className="max-w-lg mx-auto bg-white border border-slate-200 rounded-2xl shadow p-6 space-y-5">
                 <div className="flex items-start justify-between gap-3">
@@ -101,4 +101,6 @@ export default function FormPenilaian() {
             </div>
         </div>
     );
+
+    return tampilFormPenilaian();
 }

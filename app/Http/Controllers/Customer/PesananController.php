@@ -4,25 +4,14 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Pesanan;
-use App\Models\PaketTour;
+use App\Models\pesanan;
+use App\Models\pakettour;
 
 /**
  * Controller pelanggan untuk membuat dan melihat pesanan.
  */
 class PesananController extends Controller
 {
-    /**
-     * Menampilkan daftar pesanan milik pengguna.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
-     */
-    public function index(Request $request)
-    {
-        return $this->ambilDataPesanan($request);
-    }
-
     /**
      * Mengambil data pesanan milik pengguna.
      *
@@ -33,7 +22,7 @@ class PesananController extends Controller
     {
         $userId = $request->user()->id;
 
-        $pesanan = Pesanan::where('user_id', $userId)
+        $pesanan = pesanan::where('user_id', $userId)
             ->with([
                 'paketTour',
                 'pesertas',
@@ -53,18 +42,18 @@ class PesananController extends Controller
      * Membuat pesanan baru untuk paket tour tertentu.
      *
      * @param Request $request
-     * @param PaketTour|null $paketTour
+     * @param pakettour|null $paketTour
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function simpanDataPesanan(Request $request, PaketTour $paketTour = null)
+    public function simpanDataPesanan(Request $request, pakettour $paketTour = null)
     {
         $request->validate([
             'jumlah_peserta' => 'required|integer|min:1'
         ]);
 
-        $paket = $paketTour ?? PaketTour::findOrFail($request->input('paket_id'));
+        $paket = $paketTour ?? pakettour::findOrFail($request->input('paket_id'));
 
-        $pesanan = Pesanan::create([
+        $pesanan = pesanan::create([
             'user_id' => auth()->id(),
             'paket_id' => $paket->id,
             'jumlah_peserta' => $request->jumlah_peserta,
@@ -85,10 +74,10 @@ class PesananController extends Controller
      * Menandai pesanan selesai oleh pelanggan.
      *
      * @param Request $request
-     * @param Pesanan $pesanan
+     * @param pesanan $pesanan
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function markSelesai(Request $request, Pesanan $pesanan)
+    public function markSelesai(Request $request, pesanan $pesanan)
     {
         if ($pesanan->user_id !== $request->user()->id) {
             abort(403);

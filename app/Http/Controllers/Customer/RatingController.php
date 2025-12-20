@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use App\Models\Pesanan;
-use App\Models\Rating;
+use App\Models\pesanan;
+use App\Models\rating;
 use Illuminate\Http\Request;
 
 /**
@@ -16,10 +16,10 @@ class RatingController extends Controller
      * Membuat rating dan ulasan pengguna untuk pesanan.
      *
      * @param Request $request
-     * @param Pesanan $pesanan
+     * @param pesanan $pesanan
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function menyimpanRating(Request $request, Pesanan $pesanan)
+    public function menyimpanRating(Request $request, pesanan $pesanan)
     {
         $request->validate([
             'nilai_rating' => 'required|integer|min:1|max:5',
@@ -40,7 +40,7 @@ class RatingController extends Controller
             ], 422);
         }
 
-        $existing = Rating::where('user_id', auth()->id())
+        $existing = rating::where('user_id', auth()->id())
             ->where('pesanan_id', $pesanan->id)
             ->first();
 
@@ -56,7 +56,7 @@ class RatingController extends Controller
                 ->with('info', 'Rating sudah pernah diberikan untuk pesanan ini');
         }
 
-        $rating = Rating::updateOrCreate(
+        $rating = rating::updateOrCreate(
             [
                 'user_id' => auth()->id(),
                 'pesanan_id' => $pesanan->id,

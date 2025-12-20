@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('pembayaran', function (Blueprint $table) {
             $table->increments('id_pembayaran');
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('id_pesanan')->constrained('pesanans')->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained('user')->cascadeOnDelete();
+            $table->string('id_pesanan', 24);
+            $table->foreign('id_pesanan')->references('id')->on('pesanan')->cascadeOnDelete();
             $table->string('channel_pembayaran', 50)->nullable();
             $table->enum('status_pembayaran', ['pending', 'settlement', 'expire']);
             $table->integer('jumlah_pembayaran');
-            $table->string('token_pembayaran', 255)->nullable();
             $table->string('id_transaksi_midtrans', 100)->nullable();
-            $table->timestamp('waktu_dibuat')->useCurrent();
+            $table->timestamp('created_at')->useCurrent();
             $table->timestamp('waktu_dibayar')->nullable();
         });
     }

@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ratings', function (Blueprint $table) {
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('paket_id')->constrained('paket_tours')->onDelete('cascade');
+        Schema::create('rating', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('user')->onDelete('cascade');
+            $table->foreignId('paket_id')->constrained('pakettour')->onDelete('cascade');
+            $table->string('pesanan_id', 24)->nullable();
+            $table->foreign('pesanan_id')->references('id')->on('pesanan')->onDelete('cascade');
             $table->tinyInteger('nilai_rating'); // 1 - 5
             $table->text('ulasan')->nullable();
-            $table->timestamp('tanggal_rating')->useCurrent();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
 
-            // rule: satu rating per user per paket
-            $table->unique(['user_id', 'paket_id']);
+            // rule: satu rating per user per pesanan
+            $table->unique(['user_id', 'pesanan_id']);
         });
     }
 
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ratings');
+        Schema::dropIfExists('rating');
     }
 };

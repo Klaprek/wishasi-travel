@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Pesanan;
+use App\Models\pesanan;
 use Illuminate\Http\Request;
 
 /**
@@ -20,7 +20,7 @@ class KelolaPesananController extends Controller
     public function ambilDataPesanan(Request $request)
     {
         // show all pesanan by group paket
-        $pesanan = Pesanan::with('paketTour', 'user', 'pesertas')->latest()->get();
+        $pesanan = pesanan::with('paketTour', 'user', 'pesertas')->latest()->get();
 
         if ($request->expectsJson()) {
             return response()->json(['data' => $pesanan]);
@@ -33,10 +33,10 @@ class KelolaPesananController extends Controller
      * Menampilkan detail satu pesanan.
      *
      * @param Request $request
-     * @param Pesanan $pesanan
+     * @param pesanan $pesanan
      * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
      */
-    public function ambilDetailPesanan(Request $request, Pesanan $pesanan)
+    public function ambilDetailPesanan(Request $request, pesanan $pesanan)
     {
         $pesanan->load('pesertas');
 
@@ -51,10 +51,10 @@ class KelolaPesananController extends Controller
      * Mengambil data peserta untuk satu pesanan.
      *
      * @param Request $request
-     * @param Pesanan $pesanan
+     * @param pesanan $pesanan
      * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
      */
-    public function ambilDataPeserta(Request $request, Pesanan $pesanan)
+    public function ambilDataPeserta(Request $request, pesanan $pesanan)
     {
         return $this->ambilDetailPesanan($request, $pesanan);
     }
@@ -62,10 +62,10 @@ class KelolaPesananController extends Controller
     /**
      * Menandai pesanan telah diverifikasi oleh admin.
      *
-     * @param Pesanan $pesanan
+     * @param pesanan $pesanan
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function verifikasiPesanan(Pesanan $pesanan)
+    public function verifikasiPesanan(pesanan $pesanan)
     {
         $pesanan->update([
             'status_pesanan' => 'menunggu_pembayaran',
@@ -86,10 +86,10 @@ class KelolaPesananController extends Controller
      * Menolak pesanan dan menyimpan alasan penolakan.
      *
      * @param Request $request
-     * @param Pesanan $pesanan
+     * @param pesanan $pesanan
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function tolakPesanan(Request $request, Pesanan $pesanan)
+    public function tolakPesanan(Request $request, pesanan $pesanan)
     {
         $validated = $request->validate([
             'alasan_penolakan' => 'required|string',

@@ -28,6 +28,9 @@ export default function HalamanPesanan() {
         if (paketDetail) return paketDetail;
         return orders[0]?.paket_tour;
     }, [orders, paketDetail, state?.paket]);
+    const kuotaTotal = paketInfo?.kuota;
+    const kuotaTersisa = paketInfo?.sisa_kuota ?? kuotaTotal;
+    const kuotaLabel = kuotaTotal != null ? `${kuotaTersisa}/${kuotaTotal}` : '-';
 
     const tampilHalamanPesanan = () => (
         <div className="space-y-6 pt-6 pb-10">
@@ -37,7 +40,7 @@ export default function HalamanPesanan() {
                     <h1 className="text-3xl font-bold text-slate-900">{paketInfo?.nama_paket ?? 'Paket'}</h1>
                     <div className="mt-2 text-slate-600 space-y-1 text-sm">
                         <p>Keberangkatan: {paketInfo?.jadwal_keberangkatan ? formatTanggalIndo(paketInfo.jadwal_keberangkatan) : '-'}</p>
-                        <p>Kuota: {paketInfo?.kuota ?? '-'}</p>
+                        <p>Kuota: {kuotaLabel}</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">

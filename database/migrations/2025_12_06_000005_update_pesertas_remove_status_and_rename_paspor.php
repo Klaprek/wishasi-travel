@@ -12,16 +12,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('pesertas', function (Blueprint $table) {
-            if (Schema::hasColumn('pesertas', 'status_verifikasi')) {
+        Schema::table('peserta', function (Blueprint $table) {
+            if (Schema::hasColumn('peserta', 'status_verifikasi')) {
                 $table->dropColumn('status_verifikasi');
             }
 
-            if (Schema::hasColumn('pesertas', 'paspor')) {
-                DB::statement("ALTER TABLE pesertas CHANGE paspor foto_paspor VARCHAR(255) NULL");
+            if (Schema::hasColumn('peserta', 'paspor')) {
+                DB::statement("ALTER TABLE peserta CHANGE paspor foto_paspor VARCHAR(255) NULL");
             }
 
-            if (Schema::hasColumn('pesertas', 'updated_at')) {
+            if (Schema::hasColumn('peserta', 'updated_at')) {
                 $table->dropColumn('updated_at');
             }
         });
@@ -32,16 +32,16 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('pesertas', function (Blueprint $table) {
-            if (! Schema::hasColumn('pesertas', 'status_verifikasi')) {
+        Schema::table('peserta', function (Blueprint $table) {
+            if (! Schema::hasColumn('peserta', 'status_verifikasi')) {
                 $table->enum('status_verifikasi', ['belum', 'diverifikasi', 'ditolak'])->default('belum')->after('foto_paspor');
             }
 
-            if (Schema::hasColumn('pesertas', 'foto_paspor')) {
-                DB::statement("ALTER TABLE pesertas CHANGE foto_paspor paspor VARCHAR(255) NULL");
+            if (Schema::hasColumn('peserta', 'foto_paspor')) {
+                DB::statement("ALTER TABLE peserta CHANGE foto_paspor paspor VARCHAR(255) NULL");
             }
 
-            if (! Schema::hasColumn('pesertas', 'updated_at')) {
+            if (! Schema::hasColumn('peserta', 'updated_at')) {
                 $table->timestamp('updated_at')->nullable()->after('created_at');
             }
         });

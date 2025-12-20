@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (! Schema::hasTable('pesanans')) {
+        if (! Schema::hasTable('pesanan')) {
             return;
         }
 
         DB::statement(
-            "ALTER TABLE pesanans MODIFY status_pesanan ENUM('menunggu_verifikasi','menunggu_pembayaran','pembayaran_selesai','pesanan_selesai','pesanan_ditolak') NOT NULL DEFAULT 'menunggu_verifikasi'"
+            "ALTER TABLE pesanan MODIFY status_pesanan ENUM('menunggu_verifikasi','menunggu_pembayaran','pembayaran_selesai','pesanan_selesai','pesanan_ditolak') NOT NULL DEFAULT 'menunggu_verifikasi'"
         );
     }
 
@@ -25,12 +25,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        if (! Schema::hasTable('pesanans')) {
+        if (! Schema::hasTable('pesanan')) {
             return;
         }
 
         DB::statement(
-            "ALTER TABLE pesanans MODIFY status_pesanan ENUM('menunggu_verifikasi','menunggu_pembayaran','pembayaran_selesai','pesanan_selesai') NOT NULL DEFAULT 'menunggu_verifikasi'"
+            "ALTER TABLE pesanan MODIFY status_pesanan ENUM('menunggu_verifikasi','menunggu_pembayaran','pembayaran_selesai','pesanan_selesai') NOT NULL DEFAULT 'menunggu_verifikasi'"
         );
     }
 };

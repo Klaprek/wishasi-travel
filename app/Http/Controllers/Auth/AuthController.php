@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Models\User;
+use App\Models\user;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -148,7 +148,7 @@ class AuthController extends Controller
 
     protected function ambilAtauBuatUserGoogle($googleUser)
     {
-        $user = User::firstOrCreate(
+        $user = user::firstOrCreate(
             ['email' => $googleUser->getEmail()],
             [
                 'name' => $googleUser->getName() ?? $googleUser->getNickname() ?? 'Pengguna',

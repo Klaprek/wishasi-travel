@@ -71,7 +71,7 @@ export default function HalamanDataPeserta() {
 
     const pesertaList = pesanan?.pesertas ?? [];
 
-    const tampilHalamanDataPesrta = () => (
+    const tampilHalamanDataPeserta = () => (
         <div className="space-y-6 pt-6 pb-10">
             <div>
                 <p className="text-sm uppercase tracking-[0.2em] text-indigo-600 font-semibold">Halaman Data Peserta</p>
@@ -155,5 +155,5 @@ export default function HalamanDataPeserta() {
         </div>
     );
 
-    return tampilHalamanDataPesrta();
+    return tampilHalamanDataPeserta();
 }

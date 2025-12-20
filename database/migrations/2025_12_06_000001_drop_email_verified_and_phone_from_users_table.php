@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            if (Schema::hasColumn('users', 'email_verified_at')) {
+        Schema::table('user', function (Blueprint $table) {
+            if (Schema::hasColumn('user', 'email_verified_at')) {
                 $table->dropColumn('email_verified_at');
             }
 
-            if (Schema::hasColumn('users', 'phone')) {
+            if (Schema::hasColumn('user', 'phone')) {
                 $table->dropColumn('phone');
             }
         });
@@ -27,12 +27,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            if (! Schema::hasColumn('users', 'email_verified_at')) {
+        Schema::table('user', function (Blueprint $table) {
+            if (! Schema::hasColumn('user', 'email_verified_at')) {
                 $table->timestamp('email_verified_at')->nullable()->after('email');
             }
 
-            if (! Schema::hasColumn('users', 'phone')) {
+            if (! Schema::hasColumn('user', 'phone')) {
                 $table->string('phone')->nullable()->after('role');
             }
         });

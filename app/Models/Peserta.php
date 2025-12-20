@@ -3,10 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Pesanan;
+use App\Models\pesanan;
 
-class Peserta extends Model
+class peserta extends Model
 {
+    protected $table = 'peserta';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     protected $fillable = [
         'pesanan_id',
         'nama_lengkap',
@@ -15,7 +21,6 @@ class Peserta extends Model
         'email',
         'foto_identitas',
         'foto_paspor',
-        'kode',
     ];
 
     public $timestamps = false;
@@ -24,28 +29,28 @@ class Peserta extends Model
 
     public function pesanan()
     {
-        return $this->belongsTo(Pesanan::class);
+        return $this->belongsTo(pesanan::class);
     }
 
     protected static function booted(): void
     {
         static::creating(function (self $peserta) {
-            if (empty($peserta->kode)) {
-                $peserta->kode = self::generateKode($peserta);
+            if (empty($peserta->id)) {
+                $peserta->id = self::generateKode($peserta);
             }
         });
     }
 
     protected static function generateKode(self $peserta): ?string
     {
-        $pesanan = $peserta->pesanan ?? ($peserta->pesanan_id ? Pesanan::find($peserta->pesanan_id) : null);
+        $pesanan = $peserta->pesanan ?? ($peserta->pesanan_id ? pesanan::find($peserta->pesanan_id) : null);
         if (!$pesanan) {
             return null;
         }
 
         $pesananDate = optional($pesanan->created_at)->format('Ymd') ?: now()->format('Ymd');
         $pesananSeq = null;
-        if ($pesanan->kode && preg_match('/PSN-(\\d{8})-(\\d{3})/', $pesanan->kode, $matches)) {
+        if ($pesanan->id && preg_match('/PSN-(\\d{8})-(\\d{3})/', $pesanan->id, $matches)) {
             $pesananDate = $matches[1];
             $pesananSeq = $matches[2];
         } else {

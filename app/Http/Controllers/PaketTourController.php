@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\PaketTour;
-use App\Models\Rating;
+use App\Models\pakettour;
+use App\Models\pesanan;
+use App\Models\rating;
 
 /**
  * Controller untuk katalog paket tour publik.
@@ -28,7 +29,13 @@ class PaketTourController extends Controller
         }
 
         // publik hanya melihat paket yang tampil di katalog
-        $paket = PaketTour::where('tampil_di_katalog', true)->get();
+        $paket = pakettour::withSum([
+            'pesanan as kuota_terpakai' => function ($query) {
+                $query->whereIn('status_pesanan', pesanan::STATUS_KUOTA_TERPAKAI);
+            },
+        ], 'jumlah_peserta')
+            ->where('tampil_di_katalog', true)
+            ->get();
 
         if ($request->expectsJson()) {
             return response()->json([
@@ -47,7 +54,7 @@ class PaketTourController extends Controller
      */
     public function ambilDataRating()
     {
-        $ratings = Rating::with([
+        $ratings = rating::with([
             'paketTour:id,nama_paket,banner',
             'user:id,name',
         ])
@@ -78,16 +85,22 @@ class PaketTourController extends Controller
      * Menampilkan detail satu paket tour.
      *
      * @param Request $request
-     * @param PaketTour $paketTour
+     * @param pakettour $paketTour
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function ambilDataDetail(Request $request, PaketTour $paketTour)
+    public function ambilDataDetail(Request $request, pakettour $paketTour)
     {
         if (auth()->check() && in_array(auth()->user()->role, ['admin', 'owner'], true) && ! $request->expectsJson()) {
             return redirect(auth()->user()->role === 'owner' ? '/owner/rekapitulasi' : '/admin/paket');
         }
 
         if ($request->expectsJson()) {
+            $paketTour = pakettour::withSum([
+                'pesanan as kuota_terpakai' => function ($query) {
+                    $query->whereIn('status_pesanan', pesanan::STATUS_KUOTA_TERPAKAI);
+                },
+            ], 'jumlah_peserta')->findOrFail($paketTour->id);
+
             return response()->json(['data' => $paketTour]);
         }
 

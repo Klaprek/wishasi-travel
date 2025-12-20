@@ -14,43 +14,40 @@ return new class extends Migration
     {
         // Pastikan ada index untuk kolom FK yang sudah ada, agar unique lama bisa di-drop.
         // (Pada beberapa versi MySQL, FK user_id memakai index unique gabungan user_id+paket_id)
-        $hasUserIdIndex = DB::select("SHOW INDEX FROM `ratings` WHERE Key_name = 'ratings_user_id_fk_support_idx'");
+        $hasUserIdIndex = DB::select("SHOW INDEX FROM `rating` WHERE Key_name = 'rating_user_id_fk_support_idx'");
         if (empty($hasUserIdIndex)) {
-            Schema::table('ratings', function (Blueprint $table) {
-                $table->index('user_id', 'ratings_user_id_fk_support_idx');
+            Schema::table('rating', function (Blueprint $table) {
+                $table->index('user_id', 'rating_user_id_fk_support_idx');
             });
         }
 
-        $hasPaketIdIndex = DB::select("SHOW INDEX FROM `ratings` WHERE Key_name = 'ratings_paket_id_fk_support_idx'");
+        $hasPaketIdIndex = DB::select("SHOW INDEX FROM `rating` WHERE Key_name = 'rating_paket_id_fk_support_idx'");
         if (empty($hasPaketIdIndex)) {
-            Schema::table('ratings', function (Blueprint $table) {
-                $table->index('paket_id', 'ratings_paket_id_fk_support_idx');
+            Schema::table('rating', function (Blueprint $table) {
+                $table->index('paket_id', 'rating_paket_id_fk_support_idx');
             });
         }
 
-        if (! Schema::hasColumn('ratings', 'pesanan_id')) {
-            Schema::table('ratings', function (Blueprint $table) {
-                $table->foreignId('pesanan_id')
-                    ->nullable()
-                    ->after('paket_id')
-                    ->constrained('pesanans')
-                    ->onDelete('cascade');
+        if (! Schema::hasColumn('rating', 'pesanan_id')) {
+            Schema::table('rating', function (Blueprint $table) {
+                $table->string('pesanan_id', 24)->nullable()->after('paket_id');
+                $table->foreign('pesanan_id')->references('id')->on('pesanan')->onDelete('cascade');
             });
         }
 
-        $hasOldUnique = DB::select("SHOW INDEX FROM `ratings` WHERE Key_name = 'ratings_user_id_paket_id_unique'");
+        $hasOldUnique = DB::select("SHOW INDEX FROM `rating` WHERE Key_name = 'rating_user_id_paket_id_unique'");
         if (! empty($hasOldUnique)) {
-            Schema::table('ratings', function (Blueprint $table) {
+            Schema::table('rating', function (Blueprint $table) {
                 $table->dropUnique(['user_id', 'paket_id']);
             });
         }
 
-        DB::table('ratings')
+        DB::table('rating')
             ->whereNull('pesanan_id')
             ->orderBy('created_at')
             ->chunk(100, function ($rows) {
                 foreach ($rows as $row) {
-                    $pesananId = DB::table('pesanans')
+                    $pesananId = DB::table('pesanan')
                         ->where('user_id', $row->user_id)
                         ->where('paket_id', $row->paket_id)
                         ->orderByDesc('created_at')
@@ -60,7 +57,7 @@ return new class extends Migration
                         continue;
                     }
 
-                    DB::table('ratings')
+                    DB::table('rating')
                         ->where('user_id', $row->user_id)
                         ->where('paket_id', $row->paket_id)
                         ->whereNull('pesanan_id')
@@ -68,9 +65,9 @@ return new class extends Migration
                 }
             });
 
-        $hasNewUnique = DB::select("SHOW INDEX FROM `ratings` WHERE Key_name = 'ratings_user_id_pesanan_id_unique'");
+        $hasNewUnique = DB::select("SHOW INDEX FROM `rating` WHERE Key_name = 'rating_user_id_pesanan_id_unique'");
         if (empty($hasNewUnique)) {
-            Schema::table('ratings', function (Blueprint $table) {
+            Schema::table('rating', function (Blueprint $table) {
                 $table->unique(['user_id', 'pesanan_id']);
             });
         }
@@ -81,16 +78,17 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('ratings', function (Blueprint $table) {
+        Schema::table('rating', function (Blueprint $table) {
             $table->dropUnique(['user_id', 'pesanan_id']);
         });
 
-        Schema::table('ratings', function (Blueprint $table) {
+        Schema::table('rating', function (Blueprint $table) {
             $table->unique(['user_id', 'paket_id']);
         });
 
-        Schema::table('ratings', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('pesanan_id');
+        Schema::table('rating', function (Blueprint $table) {
+            $table->dropForeign(['pesanan_id']);
+            $table->dropColumn('pesanan_id');
         });
     }
 };

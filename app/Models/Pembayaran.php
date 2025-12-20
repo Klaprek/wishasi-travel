@@ -4,13 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Pembayaran extends Model
+class pembayaran extends Model
 {
     protected $table = 'pembayaran';
 
     protected $primaryKey = 'id_pembayaran';
 
-    public $timestamps = false;
+    public const UPDATED_AT = null;
+
+    public $timestamps = true;
 
     protected $fillable = [
         'user_id',
@@ -18,25 +20,23 @@ class Pembayaran extends Model
         'channel_pembayaran',
         'status_pembayaran',
         'jumlah_pembayaran',
-        'token_pembayaran',
         'id_transaksi_midtrans',
-        'waktu_dibuat',
         'waktu_dibayar',
     ];
 
     protected $casts = [
         'jumlah_pembayaran' => 'integer',
-        'waktu_dibuat' => 'datetime',
+        'created_at' => 'datetime',
         'waktu_dibayar' => 'datetime',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(user::class);
     }
 
     public function pesanan()
     {
-        return $this->belongsTo(Pesanan::class, 'id_pesanan');
+        return $this->belongsTo(pesanan::class, 'id_pesanan');
     }
 }

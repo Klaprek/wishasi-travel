@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('paket_tours', function (Blueprint $table) {
-            if (Schema::hasColumn('paket_tours', 'durasi')) {
+        Schema::table('pakettour', function (Blueprint $table) {
+            if (Schema::hasColumn('pakettour', 'durasi')) {
                 $table->dropColumn('durasi');
             }
 
-            if (! Schema::hasColumn('paket_tours', 'lama_hari')) {
+            if (! Schema::hasColumn('pakettour', 'lama_hari')) {
                 $table->integer('lama_hari')->after('kuota');
             }
 
-            if (! Schema::hasColumn('paket_tours', 'lama_malam')) {
+            if (! Schema::hasColumn('pakettour', 'lama_malam')) {
                 $table->integer('lama_malam')->after('lama_hari');
             }
         });
@@ -31,16 +31,16 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('paket_tours', function (Blueprint $table) {
-            if (Schema::hasColumn('paket_tours', 'lama_hari')) {
+        Schema::table('pakettour', function (Blueprint $table) {
+            if (Schema::hasColumn('pakettour', 'lama_hari')) {
                 $table->dropColumn('lama_hari');
             }
 
-            if (Schema::hasColumn('paket_tours', 'lama_malam')) {
+            if (Schema::hasColumn('pakettour', 'lama_malam')) {
                 $table->dropColumn('lama_malam');
             }
 
-            if (! Schema::hasColumn('paket_tours', 'durasi')) {
+            if (! Schema::hasColumn('pakettour', 'durasi')) {
                 $table->integer('durasi')->after('kuota');
             }
         });

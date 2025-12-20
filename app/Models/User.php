@@ -3,14 +3,17 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class user extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+
+    protected $table = 'user';
 
     /**
      * The attributes that are mass assignable.
@@ -48,17 +51,22 @@ class User extends Authenticatable
 
     public function pesanans()
     {
-        return $this->hasMany(Pesanan::class);
+        return $this->hasMany(pesanan::class);
     }
 
     public function pembayarans()
     {
-        return $this->hasMany(Pembayaran::class, 'user_id');
+        return $this->hasMany(pembayaran::class, 'user_id');
     }
 
     public function ratings()
     {
-        return $this->hasMany(Rating::class);
+        return $this->hasMany(rating::class);
+    }
+
+    protected static function newFactory(): UserFactory
+    {
+        return UserFactory::new();
     }
 
 }
