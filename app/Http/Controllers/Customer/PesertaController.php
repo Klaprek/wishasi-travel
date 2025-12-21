@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use App\Models\peserta;
-use App\Models\pesanan;
+use App\Models\Peserta;
+use App\Models\Pesanan;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -17,10 +17,10 @@ class PesertaController extends Controller
      * Menyimpan data peserta sesuai aturan paket tour.
      *
      * @param Request $request
-     * @param pesanan $pesanan
+     * @param Pesanan $pesanan
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function simpanDataPeserta(Request $request, pesanan $pesanan)
+    public function simpanDataPeserta(Request $request, Pesanan $pesanan)
     {
         if ($pesanan->user_id !== $request->user()->id) {
             abort(403);
@@ -62,7 +62,7 @@ class PesertaController extends Controller
                 $pasporPath = $request->file("peserta.$index.foto_paspor")->store('paspor', 'public');
             }
 
-            peserta::create([
+            Peserta::create([
                 'pesanan_id' => $pesanan->id,
                 'nama_lengkap' => $data['nama_lengkap'],
                 'alamat' => $data['alamat'],

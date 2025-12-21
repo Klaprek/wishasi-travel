@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class pembayaran extends Model
+class Pembayaran extends Model
 {
     protected $table = 'pembayaran';
 
@@ -32,11 +32,11 @@ class pembayaran extends Model
 
     public function user()
     {
-        return $this->belongsTo(user::class);
+        return $this->belongsTo(User::class);
     }
 
     public function pesanan()
     {
-        return $this->belongsTo(pesanan::class, 'id_pesanan');
+        return $this->belongsTo(Pesanan::class, 'id_pesanan');
     }
 }

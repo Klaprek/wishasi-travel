@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\pesanan;
-use App\Models\pakettour;
+use App\Models\Pesanan;
+use App\Models\Pakettour;
 
 /**
  * Controller pelanggan untuk membuat dan melihat pesanan.
@@ -22,7 +22,7 @@ class PesananController extends Controller
     {
         $userId = $request->user()->id;
 
-        $pesanan = pesanan::where('user_id', $userId)
+        $pesanan = Pesanan::where('user_id', $userId)
             ->with([
                 'paketTour',
                 'pesertas',
@@ -42,18 +42,18 @@ class PesananController extends Controller
      * Membuat pesanan baru untuk paket tour tertentu.
      *
      * @param Request $request
-     * @param pakettour|null $paketTour
+     * @param Pakettour|null $paketTour
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function simpanDataPesanan(Request $request, pakettour $paketTour = null)
+    public function simpanDataPesanan(Request $request, Pakettour $paketTour = null)
     {
         $request->validate([
             'jumlah_peserta' => 'required|integer|min:1'
         ]);
 
-        $paket = $paketTour ?? pakettour::findOrFail($request->input('paket_id'));
+        $paket = $paketTour ?? Pakettour::findOrFail($request->input('paket_id'));
 
-        $pesanan = pesanan::create([
+        $pesanan = Pesanan::create([
             'user_id' => auth()->id(),
             'paket_id' => $paket->id,
             'jumlah_peserta' => $request->jumlah_peserta,
@@ -74,10 +74,10 @@ class PesananController extends Controller
      * Menandai pesanan selesai oleh pelanggan.
      *
      * @param Request $request
-     * @param pesanan $pesanan
+     * @param Pesanan $pesanan
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function markSelesai(Request $request, pesanan $pesanan)
+    public function markSelesai(Request $request, Pesanan $pesanan)
     {
         if ($pesanan->user_id !== $request->user()->id) {
             abort(403);

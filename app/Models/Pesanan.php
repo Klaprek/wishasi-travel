@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
-class pesanan extends Model
+class Pesanan extends Model
 {
     public const STATUS_KUOTA_TERPAKAI = ['pembayaran_selesai', 'pesanan_selesai'];
 
@@ -25,22 +25,22 @@ class pesanan extends Model
 
     public function user()
     {
-        return $this->belongsTo(user::class);
+        return $this->belongsTo(User::class);
     }
 
     public function paketTour()
     {
-        return $this->belongsTo(pakettour::class, 'paket_id');
+        return $this->belongsTo(Pakettour::class, 'paket_id');
     }
 
     public function pesertas()
     {
-        return $this->hasMany(peserta::class);
+        return $this->hasMany(Peserta::class);
     }
 
     public function pembayarans()
     {
-        return $this->hasMany(pembayaran::class, 'id_pesanan');
+        return $this->hasMany(Pembayaran::class, 'id_pesanan');
     }
 
     /**
@@ -48,7 +48,7 @@ class pesanan extends Model
      */
     public function rating()
     {
-        return $this->hasOne(rating::class, 'pesanan_id');
+        return $this->hasOne(Rating::class, 'pesanan_id');
     }
 
     protected static function booted(): void
@@ -86,7 +86,7 @@ class pesanan extends Model
 
     protected static function tolakPesananJikaKuotaPenuh(int $paketId): void
     {
-        $kuota = pakettour::whereKey($paketId)->value('kuota');
+        $kuota = Pakettour::whereKey($paketId)->value('kuota');
         if ($kuota === null) {
             return;
         }

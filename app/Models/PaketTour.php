@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
-class pakettour extends Model
+class Pakettour extends Model
 {
     protected $table = 'pakettour';
 
@@ -40,12 +40,12 @@ class pakettour extends Model
 
     public function pesanan()
     {
-        return $this->hasMany(pesanan::class, 'paket_id');
+        return $this->hasMany(Pesanan::class, 'paket_id');
     }
 
     public function rating()
     {
-        return $this->hasMany(rating::class, 'paket_id');
+        return $this->hasMany(Rating::class, 'paket_id');
     }
 
     public function getBannerUrlAttribute(): ?string
@@ -60,7 +60,7 @@ class pakettour extends Model
         }
 
         return (int) $this->pesanan()
-            ->whereIn('status_pesanan', pesanan::STATUS_KUOTA_TERPAKAI)
+            ->whereIn('status_pesanan', Pesanan::STATUS_KUOTA_TERPAKAI)
             ->sum('jumlah_peserta');
     }
 
