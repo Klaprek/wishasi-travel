@@ -12,6 +12,8 @@ export default function FormPenilaian() {
     const [message, setMessage] = useState(null);
     const [error, setError] = useState(null);
     const [saving, setSaving] = useState(false);
+    const orderIdLabel = pesanan?.kode ?? pesanan?.id ?? id;
+    const paketLabel = pesanan?.paket_tour?.nama_paket ?? "paket ini";
 
     const submit = async (e) => {
         e.preventDefault();
@@ -44,17 +46,19 @@ export default function FormPenilaian() {
         <div className="pt-6 pb-10 px-4 sm:px-0">
             <div className="max-w-lg mx-auto bg-white border border-slate-200 rounded-2xl shadow p-6 space-y-5">
                 <div className="flex items-start justify-between gap-3">
-                    <div>
-                        <p className="text-xs uppercase tracking-[0.2em] text-indigo-600 font-semibold">Form Rating</p>
-                        <h1 className="text-2xl font-bold text-slate-900">Beri ulasan untuk {pesanan?.paket_tour?.nama_paket}</h1>
-                        <p className="text-xs text-slate-500">Pesanan #{pesanan?.kode ?? pesanan?.id}</p>
+                        <div>
+                            <p className="text-xs uppercase tracking-[0.2em] text-indigo-600 font-semibold">Form Rating</p>
+                        <h1 className="text-2xl font-bold text-slate-900">Beri ulasan untuk {paketLabel}</h1>
+                        <p className="text-xs text-slate-500">Pesanan #{orderIdLabel}</p>
                         <p className="text-sm text-slate-600">Nilai dari 1-5 dan tulis pengalamanmu.</p>
                     </div>
                     <button
                         type="button"
-                        onClick={() => navigate(-1)}
+                        onClick={() =>
+                            navigate("/pesanan-saya?status=pesanan_selesai")
+                        }
                         className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-slate-100 border border-slate-200 text-slate-600 hover:bg-slate-200"
-                        aria-label="Kembali"
+                        aria-label="Kembali ke pesanan selesai"
                     >
                         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6L6 18" />

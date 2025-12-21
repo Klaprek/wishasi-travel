@@ -52,10 +52,19 @@ export default function HalamanKelolaPaket() {
             <button
                 type="button"
                 onClick={() => setNotice(null)}
-                className="text-emerald-700 hover:text-emerald-900 font-semibold"
+                className="flex h-7 w-7 items-center justify-center rounded-full border border-emerald-200 bg-white text-emerald-700 transition hover:bg-emerald-100 hover:text-emerald-900"
                 aria-label="Tutup pesan"
             >
-                x
+                <svg
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="h-4 w-4"
+                    aria-hidden="true"
+                >
+                    <path strokeLinecap="round" d="M6 6l8 8M14 6l-8 8" />
+                </svg>
             </button>
         </div>
     );

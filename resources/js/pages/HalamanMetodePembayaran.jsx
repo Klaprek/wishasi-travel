@@ -10,8 +10,6 @@ const VA_METHODS = [
     { code: 'bri', name: 'BRI', color: '#00529c' },
     { code: 'permata', name: 'Permata', color: '#007f5f' },
     { code: 'cimb', name: 'CIMB Niaga', color: '#a30034' },
-    { code: 'seabank', name: 'SeaBank', color: '#f36f21' },
-    { code: 'danamon', name: 'Danamon', color: '#f7941d' },
     { code: 'bsi', name: 'BSI', color: '#0d9488' },
 ];
 

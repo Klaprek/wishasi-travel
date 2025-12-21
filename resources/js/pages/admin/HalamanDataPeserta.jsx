@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import api from '../../lib/api';
 import useFetch from '../../hooks/useFetch';
 
@@ -70,18 +70,30 @@ export default function HalamanDataPeserta() {
     if (error) return <p className="text-red-600">Gagal memuat data</p>;
 
     const pesertaList = pesanan?.pesertas ?? [];
+    const paketId = pesanan?.paket_tour?.id ?? pesanan?.paket_id;
+    const kembaliHref = paketId ? `/admin/pesanan/paket/${paketId}` : '/admin/pesanan';
 
     const tampilHalamanDataPeserta = () => (
         <div className="space-y-6 pt-6 pb-10">
-            <div>
-                <p className="text-sm uppercase tracking-[0.2em] text-indigo-600 font-semibold">Halaman Data Peserta</p>
-                <h1 className="text-3xl font-bold text-slate-900">Pesanan #{pesanan?.kode ?? pesanan?.id}</h1>
-                <p className="text-slate-600">Verifikasi identitas peserta per pesanan.</p>
-                {pesanan?.alasan_penolakan && (
-                    <div className="mt-3 text-sm text-red-700 bg-red-50 border border-red-100 rounded-xl px-4 py-3">
-                        Alasan penolakan: {pesanan.alasan_penolakan}
-                    </div>
-                )}
+            <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                <div>
+                    <p className="text-sm uppercase tracking-[0.2em] text-indigo-600 font-semibold">Halaman Data Peserta</p>
+                    <h1 className="text-3xl font-bold text-slate-900">Pesanan #{pesanan?.kode ?? pesanan?.id}</h1>
+                    <p className="text-slate-600">Verifikasi identitas peserta per pesanan.</p>
+                    {pesanan?.alasan_penolakan && (
+                        <div className="mt-3 text-sm text-red-700 bg-red-50 border border-red-100 rounded-xl px-4 py-3">
+                            Alasan penolakan: {pesanan.alasan_penolakan}
+                        </div>
+                    )}
+                </div>
+                <div className="flex items-center gap-2">
+                    <Link
+                        to={kembaliHref}
+                        className="w-full md:w-auto text-center text-sm text-indigo-700 font-semibold px-4 py-2 rounded-lg border border-indigo-200 hover:bg-indigo-50"
+                    >
+                        Kembali
+                    </Link>
+                </div>
             </div>
 
             <div className="bg-white border border-slate-200 rounded-2xl shadow overflow-hidden">

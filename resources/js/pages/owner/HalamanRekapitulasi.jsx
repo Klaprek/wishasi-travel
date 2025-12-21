@@ -63,6 +63,101 @@ export default function HalamanRekapitulasi() {
         [rows]
     );
 
+    const monthLabelByNumber = bulanOptions.reduce((acc, opt) => {
+        if (opt.value) {
+            acc[Number(opt.value)] = opt.label;
+        }
+        return acc;
+    }, {});
+
+    const chartData = useMemo(() => {
+        const monthMap = new Map();
+
+        (rekapData ?? []).forEach((row) => {
+            const pesananList = Array.isArray(row.pesanan) ? row.pesanan : [];
+            pesananList.forEach((item) => {
+                const rawDate =
+                    item.tanggal_pesanan ?? item.created_at ?? null;
+                if (!rawDate) return;
+                const datePart = String(rawDate).split("T")[0];
+                const parts = datePart.split("-");
+                const monthNumber = Number(parts[1]);
+                if (!monthNumber) return;
+
+                const current = monthMap.get(monthNumber) ?? {
+                    month: monthNumber,
+                    peserta: 0,
+                };
+                current.peserta += Number(item.jumlah_peserta ?? 0);
+                monthMap.set(monthNumber, current);
+            });
+        });
+
+        return Array.from(monthMap.values())
+            .sort((a, b) => a.month - b.month)
+            .map((item) => ({
+                key: item.month,
+                label:
+                    monthLabelByNumber[item.month] ?? `Bulan ${item.month}`,
+                peserta: item.peserta,
+            }));
+    }, [rekapData, monthLabelByNumber]);
+
+    const maxPeserta = useMemo(
+        () => chartData.reduce((max, item) => Math.max(max, item.peserta), 0),
+        [chartData]
+    );
+
+    const chartSeries = useMemo(() => {
+        if (chartData.length === 0) {
+            return {
+                width: 600,
+                height: 220,
+                paddingX: 32,
+                paddingY: 24,
+                points: "",
+                dots: [],
+            };
+        }
+
+        const width = 600;
+        const height = 220;
+        const paddingX = 32;
+        const paddingY = 24;
+        const usableWidth = width - paddingX * 2;
+        const usableHeight = height - paddingY * 2;
+        const maxValue = maxPeserta > 0 ? maxPeserta : 1;
+        const stepX =
+            chartData.length > 1
+                ? usableWidth / (chartData.length - 1)
+                : 0;
+
+        const dots = chartData.map((item, index) => {
+            const x =
+                chartData.length > 1
+                    ? paddingX + index * stepX
+                    : width / 2;
+            const y = paddingY + usableHeight * (1 - item.peserta / maxValue);
+
+            return {
+                key: item.key,
+                label: item.label,
+                value: item.peserta,
+                x,
+                y,
+            };
+        });
+
+        return {
+            width,
+            height,
+            paddingX,
+            paddingY,
+            points: dots.map((dot) => `${dot.x},${dot.y}`).join(" "),
+            dots,
+        };
+    }, [chartData, maxPeserta]);
+
     const getJudul = () => {
         const bulanLabel =
             bulanOptions.find(
@@ -280,6 +375,7 @@ export default function HalamanRekapitulasi() {
                     </tbody>
                 </table>
             </div>
+
             <div className="flex flex-col gap-1 items-end text-sm text-slate-700">
                 <div>
                     <span className="font-semibold mr-2">
@@ -295,6 +391,108 @@ export default function HalamanRekapitulasi() {
                         Rp {Number(totalPendapatan).toLocaleString("id-ID")}
                     </span>
                 </div>
+            </div>
+
+            <div className="bg-white border border-slate-200 rounded-2xl shadow p-4">
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <p className="text-sm uppercase tracking-[0.2em] text-indigo-600 font-semibold">
+                            Grafik Penjualan
+                        </p>
+                        <h2 className="text-lg font-bold text-slate-900">
+                            Total peserta per bulan
+                        </h2>
+                    </div>
+                    <p className="text-xs text-slate-500">{getJudul()}</p>
+                </div>
+
+                {loading && (
+                    <p className="mt-4 text-sm text-slate-500">
+                        Memuat grafik...
+                    </p>
+                )}
+
+                {!loading && chartData.length === 0 && (
+                    <p className="mt-4 text-sm text-slate-500">
+                        Belum ada data peserta untuk filter ini.
+                    </p>
+                )}
+
+                {!loading && chartData.length > 0 && (
+                    <div className="mt-4">
+                        <div className="w-full overflow-x-auto">
+                            <svg
+                                viewBox={`0 0 ${chartSeries.width} ${chartSeries.height}`}
+                                className="h-[220px] w-full min-w-[520px]"
+                                role="img"
+                                aria-label="Grafik trend total peserta per bulan"
+                            >
+                                <line
+                                    x1={chartSeries.paddingX}
+                                    y1={chartSeries.height - chartSeries.paddingY}
+                                    x2={chartSeries.width - chartSeries.paddingX}
+                                    y2={chartSeries.height - chartSeries.paddingY}
+                                    stroke="#e2e8f0"
+                                    strokeWidth="2"
+                                />
+                                <polyline
+                                    points={chartSeries.points}
+                                    fill="none"
+                                    stroke="#8b5cf6"
+                                    strokeWidth="2.5"
+                                    strokeLinejoin="round"
+                                    strokeLinecap="round"
+                                />
+                                {chartSeries.dots.map((dot) => (
+                                    <g key={dot.key}>
+                                        <circle
+                                            cx={dot.x}
+                                            cy={dot.y}
+                                            r="5"
+                                            fill="#8b5cf6"
+                                            stroke="#eef2ff"
+                                            strokeWidth="2"
+                                        />
+                                        <text
+                                            x={dot.x}
+                                            y={dot.y - 10}
+                                            textAnchor="middle"
+                                            fontSize="11"
+                                            fill="#475569"
+                                        >
+                                            {dot.value}
+                                        </text>
+                                    </g>
+                                ))}
+                            </svg>
+                        </div>
+                        <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                            {chartSeries.dots.map((dot) => (
+                                <div
+                                    key={dot.key}
+                                    className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2"
+                                >
+                                    <span className="h-2.5 w-2.5 rounded-full bg-purple-500" />
+                                    <span
+                                        className="min-w-0 flex-1 text-sm font-semibold text-slate-700 truncate"
+                                        title={dot.label}
+                                    >
+                                        {dot.label}
+                                    </span>
+                                    <span className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-2 py-0.5 text-xs font-semibold text-slate-900">
+                                        {dot.value}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {!loading && chartData.length > 0 && (
+                    <p className="mt-3 text-xs text-slate-500">
+                        Menampilkan total peserta per bulan.
+                    </p>
+                )}
             </div>
         </div>
     );

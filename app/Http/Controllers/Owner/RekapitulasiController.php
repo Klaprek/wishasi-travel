@@ -21,7 +21,7 @@ class RekapitulasiController extends Controller
     public function ambilDataRekap(Request $request)
     {
         $query = pesanan::with(['paketTour', 'user', 'pembayarans'])
-            ->where('status_pesanan', 'pembayaran_selesai');
+            ->whereIn('status_pesanan', ['pembayaran_selesai', 'pesanan_selesai']);
 
         if ($request->filled('bulan')) {
             $query->whereMonth('created_at', $request->integer('bulan'));
@@ -51,6 +51,7 @@ class RekapitulasiController extends Controller
                     'jumlah_peserta' => $pesanan->jumlah_peserta,
                     'harga' => $pesanan->paketTour?->harga_per_peserta,
                     'pembayaran' => $pembayaran?->channel_pembayaran,
+                    'tanggal_pesanan' => $pesanan->created_at?->toDateString(),
                 ];
             })->values();
 
