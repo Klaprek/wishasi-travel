@@ -51,6 +51,7 @@ class RekapitulasiController extends Controller
                     'jumlah_peserta' => $pesanan->jumlah_peserta,
                     'harga' => $pesanan->paketTour?->harga_per_peserta,
                     'pembayaran' => $pembayaran?->channel_pembayaran,
+                    'jumlah_pembayaran' => $pembayaran?->jumlah_pembayaran,
                     'tanggal_pesanan' => $pesanan->created_at?->toDateString(),
                 ];
             })->values();

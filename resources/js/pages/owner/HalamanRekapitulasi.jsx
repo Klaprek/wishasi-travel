@@ -46,6 +46,7 @@ export default function HalamanRekapitulasi() {
                     customer: item.customer ?? "-",
                     jumlah_peserta: item.jumlah_peserta ?? 0,
                     pembayaran: item.pembayaran ?? "-",
+                    jumlah_pembayaran: item.jumlah_pembayaran ?? 0,
                     harga: item.harga ?? 0,
                 }))
             ),
@@ -76,8 +77,7 @@ export default function HalamanRekapitulasi() {
         (rekapData ?? []).forEach((row) => {
             const pesananList = Array.isArray(row.pesanan) ? row.pesanan : [];
             pesananList.forEach((item) => {
-                const rawDate =
-                    item.tanggal_pesanan ?? item.created_at ?? null;
+                const rawDate = item.tanggal_pesanan ?? item.created_at ?? null;
                 if (!rawDate) return;
                 const datePart = String(rawDate).split("T")[0];
                 const parts = datePart.split("-");
@@ -97,8 +97,7 @@ export default function HalamanRekapitulasi() {
             .sort((a, b) => a.month - b.month)
             .map((item) => ({
                 key: item.month,
-                label:
-                    monthLabelByNumber[item.month] ?? `Bulan ${item.month}`,
+                label: monthLabelByNumber[item.month] ?? `Bulan ${item.month}`,
                 peserta: item.peserta,
             }));
     }, [rekapData, monthLabelByNumber]);
@@ -115,6 +114,7 @@ export default function HalamanRekapitulasi() {
                 height: 220,
                 paddingX: 32,
                 paddingY: 24,
+                labelY: 0,
                 points: "",
                 dots: [],
             };
@@ -128,15 +128,11 @@ export default function HalamanRekapitulasi() {
         const usableHeight = height - paddingY * 2;
         const maxValue = maxPeserta > 0 ? maxPeserta : 1;
         const stepX =
-            chartData.length > 1
-                ? usableWidth / (chartData.length - 1)
-                : 0;
+            chartData.length > 1 ? usableWidth / (chartData.length - 1) : 0;
 
         const dots = chartData.map((item, index) => {
             const x =
-                chartData.length > 1
-                    ? paddingX + index * stepX
-                    : width / 2;
+                chartData.length > 1 ? paddingX + index * stepX : width / 2;
             const y = paddingY + usableHeight * (1 - item.peserta / maxValue);
 
             return {
@@ -153,6 +149,7 @@ export default function HalamanRekapitulasi() {
             height,
             paddingX,
             paddingY,
+            labelY: height - paddingY + 16,
             points: dots.map((dot) => `${dot.x},${dot.y}`).join(" "),
             dots,
         };
@@ -170,6 +167,13 @@ export default function HalamanRekapitulasi() {
         return `Rekapitulasi Penjualan Bulan ${bulanLabel} Tahun ${
             appliedFilters.tahun || "-"
         }`;
+    };
+
+    const getJudulGrafik = () => {
+        if (appliedFilters.tahun) {
+            return `Total peserta per bulan Tahun ${appliedFilters.tahun}`;
+        }
+        return "Total peserta per bulan Semua Tahun";
     };
 
     const handlePrint = () => {
@@ -195,6 +199,9 @@ export default function HalamanRekapitulasi() {
                 <td style="padding:8px;border:1px solid #e2e8f0; text-align:right;">Rp ${Number(
                     item.harga ?? 0
                 ).toLocaleString("id-ID")}</td>
+                                <td style="padding:8px;border:1px solid #e2e8f0; text-align:right;">Rp ${Number(
+                                    item.jumlah_pembayaran ?? 0
+                                ).toLocaleString("id-ID")}</td>
             </tr>
         `
             )
@@ -228,12 +235,13 @@ export default function HalamanRekapitulasi() {
                                 <th>Jumlah Peserta</th>
                                 <th>Pembayaran</th>
                                 <th>Harga</th>
+                                <th>Jumlah Pembayaran</th>
                             </tr>
                         </thead>
                         <tbody>
                             ${
                                 rowsHtml ||
-                                '<tr><td colspan="5" style="padding:12px; text-align:center; color:#94a3b8;">Tidak ada data</td></tr>'
+                                '<tr><td colspan="6" style="padding:12px; text-align:center; color:#94a3b8;">Tidak ada data</td></tr>'
                             }
                         </tbody>
                     </table>
@@ -335,6 +343,7 @@ export default function HalamanRekapitulasi() {
                             <th className="px-6 py-3">Jumlah Peserta</th>
                             <th className="px-6 py-3">Pembayaran</th>
                             <th className="px-6 py-3">Harga</th>
+                            <th className="px-6 py-3">Jumlah Pembayaran</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
@@ -360,13 +369,19 @@ export default function HalamanRekapitulasi() {
                                         "id-ID"
                                     )}
                                 </td>
+                                <td className="px-6 py-4 text-sm text-slate-700">
+                                    Rp{" "}
+                                    {Number(
+                                        item.jumlah_pembayaran ?? 0
+                                    ).toLocaleString("id-ID")}
+                                </td>
                             </tr>
                         ))}
                         {!loading && rekapData.length === 0 && (
                             <tr>
                                 <td
                                     className="px-6 py-6 text-center text-slate-500"
-                                    colSpan={5}
+                                    colSpan={6}
                                 >
                                     Belum ada data.
                                 </td>
@@ -400,7 +415,7 @@ export default function HalamanRekapitulasi() {
                             Grafik Penjualan
                         </p>
                         <h2 className="text-lg font-bold text-slate-900">
-                            Total peserta per bulan
+                            {getJudulGrafik()}
                         </h2>
                     </div>
                     <p className="text-xs text-slate-500">{getJudul()}</p>
@@ -429,9 +444,17 @@ export default function HalamanRekapitulasi() {
                             >
                                 <line
                                     x1={chartSeries.paddingX}
-                                    y1={chartSeries.height - chartSeries.paddingY}
-                                    x2={chartSeries.width - chartSeries.paddingX}
-                                    y2={chartSeries.height - chartSeries.paddingY}
+                                    y1={
+                                        chartSeries.height -
+                                        chartSeries.paddingY
+                                    }
+                                    x2={
+                                        chartSeries.width - chartSeries.paddingX
+                                    }
+                                    y2={
+                                        chartSeries.height -
+                                        chartSeries.paddingY
+                                    }
                                     stroke="#e2e8f0"
                                     strokeWidth="2"
                                 />
@@ -463,6 +486,18 @@ export default function HalamanRekapitulasi() {
                                             {dot.value}
                                         </text>
                                     </g>
+                                ))}
+                                {chartSeries.dots.map((dot) => (
+                                    <text
+                                        key={`${dot.key}-label`}
+                                        x={dot.x}
+                                        y={chartSeries.labelY}
+                                        textAnchor="middle"
+                                        fontSize="11"
+                                        fill="#64748b"
+                                    >
+                                        {dot.label}
+                                    </text>
                                 ))}
                             </svg>
                         </div>
