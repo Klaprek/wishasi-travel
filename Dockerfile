@@ -59,7 +59,10 @@ EXPOSE 8080
 # Start Laravel (Production Safe)
 # ==============================
 CMD php artisan storage:link || true && \
+<<<<<<< HEAD
     php artisan migrate --force --seed || true && \
+=======
+>>>>>>> 0fb1d156c48f956260d4a7f8c3c07113ca08f4e6
     php artisan config:clear && \
     php artisan cache:clear && \
     php artisan serve --host=0.0.0.0 --port=8080
