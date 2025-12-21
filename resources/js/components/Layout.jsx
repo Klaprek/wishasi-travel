@@ -2,16 +2,17 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../providers/AuthProvider';
 
-function NavItem({ to, label, end = false }) {
+function NavItem({ to, label, end = false, isActiveOverride = false }) {
     return (
         <NavLink
             to={to}
             end={end}
-            className={({ isActive }) =>
-                `px-3 py-2 text-sm font-semibold transition ${
-                    isActive ? 'text-purple-700' : 'text-slate-700 hover:text-purple-700'
-                }`
-            }
+            className={({ isActive }) => {
+                const active = isActive || isActiveOverride;
+                return `px-3 py-2 text-sm font-semibold transition ${
+                    active ? 'text-purple-700' : 'text-slate-700/70 hover:text-purple-700'
+                }`;
+            }}
         >
             {label}
         </NavLink>
@@ -24,7 +25,7 @@ function AnchorNavItem({ label, hash, isActive, onClick }) {
             to={`/#${hash}`}
             onClick={(e) => onClick?.(e, hash)}
             className={`px-3 py-2 text-sm font-semibold transition ${
-                isActive ? 'text-purple-700' : 'text-slate-700 hover:text-purple-700'
+                isActive ? 'text-purple-700' : 'text-slate-700/70 hover:text-purple-700'
             }`}
         >
             {label}
@@ -128,7 +129,16 @@ export default function Layout() {
                     ))}
                 </>
             )}
-            {isCustomer && <NavItem to="/pesanan-saya" label="Pesanan Saya" />}
+            {isCustomer && (
+                <NavItem
+                    to="/pesanan-saya"
+                    label="Pesanan Saya"
+                    isActiveOverride={
+                        location.pathname.startsWith('/pesanan/') ||
+                        location.pathname.startsWith('/pembayaran/')
+                    }
+                />
+            )}
             {isAdmin && (
                 <>
                     <NavItem to="/admin/paket" label="Kelola Paket" />

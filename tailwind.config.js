@@ -1,4 +1,3 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 
 // Palette diambil dari warna utama logo (ungu-magenta) untuk dipakai sebagai primary dan override indigo.
@@ -28,7 +27,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Roboto', 'sans-serif'],
             },
             colors: {
                 primary: brandColors,

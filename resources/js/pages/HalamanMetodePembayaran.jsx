@@ -25,6 +25,8 @@ export default function HalamanMetodePembayaran() {
     const [paymentSuccess, setPaymentSuccess] = useState(false);
     const [transactionStatus, setTransactionStatus] = useState(null);
     const [midtransOrderId, setMidtransOrderId] = useState(null);
+    const orderIdLabel = pesanan?.kode ?? pesanan?.id ?? orderId;
+    const paketLabel = pesanan?.paket_tour?.nama_paket ?? 'paket ini';
 
     const extractVaInfo = (data) => {
         const info = {};
@@ -182,17 +184,17 @@ export default function HalamanMetodePembayaran() {
                 <div className="flex items-start justify-between gap-3">
                     <div className="space-y-1">
                         <p className="text-xs uppercase tracking-[0.2em] text-indigo-600 font-semibold">Halaman Metode Pembayaran</p>
-                        <h1 className="text-2xl font-bold text-slate-900">Pesanan #{pesanan?.kode ?? pesanan?.id}</h1>
+                        <h1 className="text-2xl font-bold text-slate-900">Pesanan #{orderIdLabel}</h1>
                         <p className="text-sm text-slate-600">
-                            Pilih metode pembayaran untuk paket {pesanan?.paket_tour?.nama_paket}.
+                            Pilih metode pembayaran untuk paket {paketLabel}.
                         </p>
                         <p className="text-xs text-slate-500">Batas waktu pembayaran: 24 jam setelah VA dibuat.</p>
                     </div>
                     <button
                         type="button"
-                        onClick={() => navigate(-1)}
+                        onClick={() => navigate('/pesanan-saya?status=menunggu_pembayaran')}
                         className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-slate-100 border border-slate-200 text-slate-600 hover:bg-slate-200"
-                        aria-label="Kembali"
+                        aria-label="Kembali ke menunggu pembayaran"
                     >
                         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6L6 18" />
@@ -233,8 +235,12 @@ export default function HalamanMetodePembayaran() {
                     {error && <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">{error}</div>}
                     <button
                         onClick={startVaPayment}
-                        disabled={processing}
-                        className="px-4 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 disabled:opacity-60"
+                        disabled={processing || paymentSuccess}
+                        className={`px-4 py-2.5 rounded-lg text-sm font-semibold ${
+                            paymentSuccess
+                                ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
+                                : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                        } disabled:opacity-60`}
                     >
                         {processing ? 'Memproses pembayaran...' : 'Bayar Sekarang'}
                     </button>

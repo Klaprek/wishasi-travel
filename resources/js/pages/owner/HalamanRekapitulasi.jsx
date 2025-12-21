@@ -341,7 +341,7 @@ export default function HalamanRekapitulasi() {
                         {rows.map((item, idx) => (
                             <tr key={idx} className="hover:bg-slate-50/80">
                                 <td className="px-6 py-4">
-                                    <p className="font-semibold text-slate-900">
+                                    <p className=" text-slate-900">
                                         {item.paket}
                                     </p>
                                 </td>

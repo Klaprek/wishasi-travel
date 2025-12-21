@@ -211,7 +211,7 @@ const HalamanKatalog = () => {
                                                         />
                                                     </svg>
                                                 </span>
-                                                <span className="font-semibold text-slate-800">
+                                                <span className="text-slate-800">
                                                     {durasi}
                                                 </span>
                                             </div>

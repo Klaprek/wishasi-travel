@@ -27,10 +27,18 @@ const HalamanDetail = ({ prefetchedPaket = null, disableRedirect = false }) => {
 
     const banner =
         paket.banner_url || (paket.banner ? `/storage/${paket.banner}` : null);
-    const destinasiList = (paket.destinasi || "")
-        .split(",")
+    const destinasiRaw = paket.destinasi || "";
+    const destinasiByLine = destinasiRaw
+        .split(/\r?\n/)
         .map((d) => d.trim())
         .filter(Boolean);
+    const destinasiList =
+        destinasiByLine.length > 1
+            ? destinasiByLine
+            : destinasiRaw
+                  .split(",")
+                  .map((d) => d.trim())
+                  .filter(Boolean);
     const includeList = (paket.include || "")
         .split(/\r?\n/)
         .map((d) => d.trim())

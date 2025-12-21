@@ -35,6 +35,18 @@ export default function FormDataPaket() {
         if (raw.includes(' ')) return raw.split(' ')[0];
         return raw;
     };
+    const formatDestinasiInput = (value) => {
+        if (!value) return '';
+        const raw = String(value);
+        if (raw.includes('\n') || raw.includes('\r')) {
+            return raw;
+        }
+        return raw
+            .split(',')
+            .map((item) => item.trim())
+            .filter(Boolean)
+            .join('\n');
+    };
 
     useEffect(() => {
         if (existing) {
@@ -48,6 +60,7 @@ export default function FormDataPaket() {
                 lama_hari: existing.lama_hari ?? '',
                 lama_malam: existing.lama_malam ?? '',
                 jadwal_keberangkatan: formatDateInput(existing.jadwal_keberangkatan),
+                destinasi: formatDestinasiInput(existing.destinasi),
             }));
         }
     }, [existing]);
@@ -104,30 +117,31 @@ export default function FormDataPaket() {
 
     const tampilFormPengisianData = () => (
         <div className="max-w-4xl mx-auto space-y-6 pt-6 pb-10">
-            <div>
-                <p className="text-sm uppercase tracking-[0.2em] text-indigo-600 font-semibold">Form Data Paket</p>
-                <h1 className="text-3xl font-bold text-slate-900">{isEdit ? 'Edit Paket' : 'Tambah Paket'}</h1>
-                <p className="text-slate-600">Lengkapi informasi paket tour.</p>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <p className="text-sm uppercase tracking-[0.2em] text-indigo-600 font-semibold">Form Data Paket</p>
+                    <h1 className="text-3xl font-bold text-slate-900">{isEdit ? 'Edit Paket' : 'Tambah Paket'}</h1>
+                    <p className="text-slate-600">Lengkapi informasi paket tour.</p>
+                </div>
+                <button
+                    type="button"
+                    onClick={() => navigate('/admin/paket')}
+                    className="w-full sm:w-auto text-center text-sm font-semibold text-indigo-700 border border-indigo-200 rounded-lg px-4 py-2 hover:bg-indigo-50"
+                >
+                    Kembali
+                </button>
             </div>
 
             {error && <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">{error}</div>}
 
             <form className="bg-white border border-slate-200 rounded-3xl shadow p-6 space-y-4" onSubmit={submit}>
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid gap-4 md:grid-cols-2">
                     <div>
                         <label className="text-sm font-semibold text-slate-700">Nama Paket</label>
                         <input
                             className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
                             value={form.nama_paket}
                             onChange={(e) => updateField('nama_paket', e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label className="text-sm font-semibold text-slate-700">Destinasi</label>
-                        <input
-                            className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
-                            value={form.destinasi}
-                            onChange={(e) => updateField('destinasi', e.target.value)}
                         />
                     </div>
                     <div>
@@ -140,15 +154,6 @@ export default function FormDataPaket() {
                         />
                     </div>
                     <div>
-                        <label className="text-sm font-semibold text-slate-700">Jadwal Keberangkatan</label>
-                        <input
-                            type="date"
-                            className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
-                            value={form.jadwal_keberangkatan ?? ''}
-                            onChange={(e) => updateField('jadwal_keberangkatan', e.target.value)}
-                        />
-                    </div>
-                    <div>
                         <label className="text-sm font-semibold text-slate-700">Kuota</label>
                         <input
                             type="number"
@@ -157,33 +162,36 @@ export default function FormDataPaket() {
                             onChange={(e) => updateField('kuota', e.target.value)}
                         />
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
-                        <div>
-                            <label className="text-sm font-semibold text-slate-700">Lama (hari)</label>
-                            <input
-                                type="number"
-                                className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
-                                value={form.lama_hari}
-                                onChange={(e) => updateField('lama_hari', e.target.value)}
-                            />
-                        </div>
-                        <div>
-                            <label className="text-sm font-semibold text-slate-700">Lama (malam)</label>
-                            <input
-                                type="number"
-                                className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
-                                value={form.lama_malam}
-                                onChange={(e) => updateField('lama_malam', e.target.value)}
-                            />
+                    <div>
+                        <label className="text-sm font-semibold text-slate-700">Lama perjalanan</label>
+                        <div className="mt-1 grid grid-cols-2 gap-3">
+                            <div>
+                                <input
+                                    type="number"
+                                    placeholder="Hari"
+                                    className="w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
+                                    value={form.lama_hari}
+                                    onChange={(e) => updateField('lama_hari', e.target.value)}
+                                />
+                            </div>
+                            <div>
+                                <input
+                                    type="number"
+                                    placeholder="Malam"
+                                    className="w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
+                                    value={form.lama_malam}
+                                    onChange={(e) => updateField('lama_malam', e.target.value)}
+                                />
+                            </div>
                         </div>
                     </div>
                     <div>
-                        <label className="text-sm font-semibold text-slate-700">Include</label>
-                        <textarea
-                            rows={3}
+                        <label className="text-sm font-semibold text-slate-700">Jadwal Keberangkatan</label>
+                        <input
+                            type="date"
                             className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
-                            value={form.include}
-                            onChange={(e) => updateField('include', e.target.value)}
+                            value={form.jadwal_keberangkatan ?? ''}
+                            onChange={(e) => updateField('jadwal_keberangkatan', e.target.value)}
                         />
                     </div>
                     <div>
@@ -194,6 +202,25 @@ export default function FormDataPaket() {
                             onChange={(e) => updateField('banner', e.target.files?.[0] ?? null)}
                             className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 bg-white"
                             required={!isEdit}
+                        />
+                    </div>
+                    <div>
+                        <label className="text-sm font-semibold text-slate-700">Destinasi</label>
+                        <textarea
+                            rows={3}
+                            placeholder="Pisahkan destinasi dengan enter"
+                            className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
+                            value={form.destinasi}
+                            onChange={(e) => updateField('destinasi', e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label className="text-sm font-semibold text-slate-700">Include</label>
+                        <textarea
+                            rows={3}
+                            className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
+                            value={form.include}
+                            onChange={(e) => updateField('include', e.target.value)}
                         />
                     </div>
                 </div>
