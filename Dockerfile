@@ -58,8 +58,7 @@ EXPOSE 8080
 # ==============================
 # Start Laravel (Production Safe)
 # ==============================
-CMD php artisan key:generate --force || true && \
-    php artisan storage:link || true && \
+CMD php artisan storage:link || true && \
     php artisan migrate --force --seed || true && \
     php artisan config:clear && \
     php artisan cache:clear && \

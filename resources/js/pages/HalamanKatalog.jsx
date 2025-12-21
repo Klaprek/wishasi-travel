@@ -505,7 +505,7 @@ const HalamanKatalog = () => {
                             <div className="space-y-1">
                                 <p className="text-lg font-semibold">Call Us</p>
                                 <a
-                                    href="tel:088742877304"
+                                    href="https://wa.me/088742877304"
                                     className="text-sm text-purple-100 hover:text-white transition"
                                 >
                                     0887 4287 7304
@@ -528,7 +528,7 @@ const HalamanKatalog = () => {
                             <p className="text-lg font-semibold">Follow Us</p>
                             <div className="flex items-center gap-4">
                                 <a
-                                    href="https://instagram.com/"
+                                    href="https://www.instagram.com/wishasi_travel"
                                     target="_blank"
                                     rel="noreferrer"
                                     className="h-11 w-11 rounded-full bg-purple-800 text-white flex items-center justify-center hover:bg-purple-700 transition"
@@ -548,7 +548,7 @@ const HalamanKatalog = () => {
                                     </svg>
                                 </a>
                                 <a
-                                    href="https://tiktok.com/"
+                                    href="https://www.tiktok.com/@wishasitourpku"
                                     target="_blank"
                                     rel="noreferrer"
                                     className="h-11 w-11 rounded-full bg-purple-800 text-white flex items-center justify-center hover:bg-purple-700 transition"
