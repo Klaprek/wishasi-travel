@@ -29,13 +29,8 @@ class PaketTourController extends Controller
         }
 
         // publik hanya melihat paket yang tampil di katalog
-        $paket = Pakettour::withSum([
-            'pesanan as kuota_terpakai' => function ($query) {
-                $query->whereIn('status_pesanan', Pesanan::STATUS_KUOTA_TERPAKAI);
-            },
-        ], 'jumlah_peserta')
-            ->where('tampil_di_katalog', true)
-            ->get();
+        $paket = Pakettour::where('tampil_di_katalog', true)->get();
+
 
         if ($request->expectsJson()) {
             return response()->json([

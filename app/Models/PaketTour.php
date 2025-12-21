@@ -34,7 +34,7 @@ class Pakettour extends Model
 
     protected $appends = [
         'banner_url',
-        // 'kuota_terpakai',
+        'kuota_terpakai',
         'sisa_kuota',
     ];
 
