@@ -3,13 +3,13 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\user;
+use App\Models\User;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        user::firstOrCreate(
+        User::firstOrCreate(
             ['email' => 'admin@tour.com'],
             [
                 'name' => 'Admin',
@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
             ]
         );
 
-        user::firstOrCreate(
+        User::firstOrCreate(
             ['email' => 'owner@tour.com'],
             [
                 'name' => 'Owner',
