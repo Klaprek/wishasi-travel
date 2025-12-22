@@ -48,50 +48,52 @@ export default function HalamanKelolaPesanan() {
             {error && <p className="text-red-600">Gagal memuat data</p>}
 
             <div className="bg-white border border-slate-200 shadow rounded-2xl overflow-hidden">
-                <table className="min-w-full divide-y divide-slate-200">
-                    <thead className="bg-slate-50 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                        <tr>
-                            <th className="px-6 py-3">Tour</th>
-                            <th className="px-6 py-3">Keberangkatan</th>
-                            <th className="px-6 py-3">Terverifikasi</th>
-                            <th className="px-6 py-3">Kuota</th>
-                            <th className="px-6 py-3 text-right">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                        {paketTampil.map((item) => (
-                            <tr key={item.id} className="hover:bg-slate-50/80">
-                                <td className="px-6 py-4">
-                                    <p className="font-semibold text-slate-900">{item.nama_paket}</p>
-                                    <p className="text-sm text-slate-500">ID #{item.id}</p>
-                                </td>
-                                <td className="px-6 py-4 text-sm text-slate-700">
-                                    {item.jadwal_keberangkatan ? formatTanggalIndo(item.jadwal_keberangkatan) : '-'}
-                                </td>
-                                <td className="px-6 py-4 text-sm text-slate-700">{item.totalTerverifikasi} peserta</td>
-                                <td className="px-6 py-4 text-sm text-slate-700">
-                                    {item.kuota != null ? `${item.sisa_kuota}/${item.kuota}` : '-'}
-                                </td>
-                                <td className="px-6 py-4 text-right">
-                                    <Link
-                                        to={`/admin/pesanan/paket/${item.id}`}
-                                        state={{ paket: item }}
-                                        className="px-3 py-2 text-sm font-semibold text-indigo-700 bg-indigo-50 rounded-lg hover:bg-indigo-100"
-                                    >
-                                        Detail
-                                    </Link>
-                                </td>
-                            </tr>
-                        ))}
-                        {!loading && paketTampil.length === 0 && (
+                <div className="w-full overflow-x-auto">
+                    <table className="w-full min-w-[720px] divide-y divide-slate-200">
+                        <thead className="bg-slate-50 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide">
                             <tr>
-                                <td className="px-6 py-6 text-center text-slate-500" colSpan={5}>
-                                    Tidak ada tour yang ditampilkan di katalog.
-                                </td>
+                                <th className="px-6 py-3">Tour</th>
+                                <th className="px-6 py-3">Keberangkatan</th>
+                                <th className="px-6 py-3">Terverifikasi</th>
+                                <th className="px-6 py-3">Kuota</th>
+                                <th className="px-6 py-3 text-right">Aksi</th>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                            {paketTampil.map((item) => (
+                                <tr key={item.id} className="hover:bg-slate-50/80">
+                                    <td className="px-6 py-4">
+                                        <p className="font-semibold text-slate-900">{item.nama_paket}</p>
+                                        <p className="text-sm text-slate-500">ID #{item.id}</p>
+                                    </td>
+                                    <td className="px-6 py-4 text-sm text-slate-700">
+                                        {item.jadwal_keberangkatan ? formatTanggalIndo(item.jadwal_keberangkatan) : '-'}
+                                    </td>
+                                    <td className="px-6 py-4 text-sm text-slate-700">{item.totalTerverifikasi} peserta</td>
+                                    <td className="px-6 py-4 text-sm text-slate-700">
+                                        {item.kuota != null ? `${item.sisa_kuota}/${item.kuota}` : '-'}
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
+                                        <Link
+                                            to={`/admin/pesanan/paket/${item.id}`}
+                                            state={{ paket: item }}
+                                            className="px-3 py-2 text-sm font-semibold text-indigo-700 bg-indigo-50 rounded-lg hover:bg-indigo-100"
+                                        >
+                                            Detail
+                                        </Link>
+                                    </td>
+                                </tr>
+                            ))}
+                            {!loading && paketTampil.length === 0 && (
+                                <tr>
+                                    <td className="px-6 py-6 text-center text-slate-500" colSpan={5}>
+                                        Tidak ada tour yang ditampilkan di katalog.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );
