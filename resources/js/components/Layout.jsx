@@ -33,6 +33,8 @@ function AnchorNavItem({ label, hash, isActive, onClick }) {
     );
 }
 
+const ANCHOR_SECTION_IDS = ['home', 'katalog', 'rating', 'contact'];
+
 export default function Layout() {
     const { user, logout } = useAuth();
     const isAdmin = user?.role === 'admin';
@@ -42,16 +44,21 @@ export default function Layout() {
     const location = useLocation();
     const navigate = useNavigate();
     const isLoginPage = location.pathname === '/login';
-    const isHomeActive = location.pathname === '/' && (!location.hash || location.hash === '#hero-section');
+    const isHomePage = location.pathname === '/';
+    const [activeSection, setActiveSection] = useState(() => {
+        if (!isHomePage) return '';
+        return location.hash?.replace('#', '') || 'home';
+    });
+    const isHomeActive = isHomePage && activeSection === 'home';
     const [openUserMenu, setOpenUserMenu] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [isWide, setIsWide] = useState(typeof window !== 'undefined' ? window.innerWidth > 840 : true);
     const userMenuRef = useRef(null);
 
     const customerAnchorLinks = [
-        { hash: 'paket-section', label: 'Katalog' },
-        { hash: 'rating-section', label: 'Rating' },
-        { hash: 'contact-section', label: 'Contact Us' },
+        { hash: 'katalog', label: 'Katalog' },
+        { hash: 'rating', label: 'Rating' },
+        { hash: 'contact', label: 'Contact Us' },
     ];
 
     const scrollToSection = (hash) => {
@@ -67,8 +74,8 @@ export default function Layout() {
 
     const handleHomeClick = (e) => {
         e.preventDefault();
-        navigate('/#hero-section');
-        requestAnimationFrame(() => scrollToSection('hero-section'));
+        navigate('/#home');
+        requestAnimationFrame(() => scrollToSection('home'));
     };
 
     const handleAnchorClick = (e, hash) => {
@@ -79,15 +86,59 @@ export default function Layout() {
     };
 
     useEffect(() => {
-        if (location.pathname !== '/' || !location.hash) return;
+        if (!isHomePage || !location.hash) return;
+        setActiveSection(location.hash.replace('#', ''));
         scrollToSection(location.hash);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location.pathname, location.hash]);
+    }, [isHomePage, location.hash]);
 
-    const isHashActive = (hash) => {
-        if (location.pathname !== '/') return false;
-        return location.hash === `#${hash}`;
-    };
+    const isSectionActive = (hash) => isHomePage && activeSection === hash;
+
+    useEffect(() => {
+        if (!isHomePage) {
+            setActiveSection('');
+            return;
+        }
+        let ticking = false;
+
+        const updateActiveSection = () => {
+            if (typeof document === 'undefined') return;
+            const header = document.querySelector('header');
+            const offset = header?.offsetHeight ?? 0;
+            const scrollPosition = window.scrollY + offset + 4;
+            let current = ANCHOR_SECTION_IDS[0];
+
+            for (const id of ANCHOR_SECTION_IDS) {
+                const el = document.getElementById(id);
+                if (!el) continue;
+                const top = el.getBoundingClientRect().top + window.scrollY;
+                if (top <= scrollPosition) {
+                    current = id;
+                } else {
+                    break;
+                }
+            }
+
+            setActiveSection((prev) => (prev === current ? prev : current));
+        };
+
+        const handleScroll = () => {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(() => {
+                ticking = false;
+                updateActiveSection();
+            });
+        };
+
+        updateActiveSection();
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        window.addEventListener('resize', updateActiveSection);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('resize', updateActiveSection);
+        };
+    }, [isHomePage]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -117,13 +168,13 @@ export default function Layout() {
         <>
             {!isAdminOrOwner && (
                 <>
-                    <AnchorNavItem hash="hero-section" label="Home" isActive={isHomeActive} onClick={handleHomeClick} />
+                    <AnchorNavItem hash="home" label="Home" isActive={isHomeActive} onClick={handleHomeClick} />
                     {customerAnchorLinks.map((link) => (
                         <AnchorNavItem
                             key={link.hash}
                             hash={link.hash}
                             label={link.label}
-                            isActive={isHashActive(link.hash)}
+                            isActive={isSectionActive(link.hash)}
                             onClick={handleAnchorClick}
                         />
                     ))}
@@ -154,7 +205,7 @@ export default function Layout() {
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
             <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-6">
-                    <Link to="/#hero-section" onClick={handleHomeClick} className="flex items-center gap-3">
+                    <Link to="/#home" onClick={handleHomeClick} className="flex items-center gap-3">
                         <img src="/images/logo.webp" alt="Wishasi" className="h-12 w-12 object-contain" />
                         <div className="leading-tight">
                             <p className="text-xl font-bold text-purple-900">Wishasi</p>
