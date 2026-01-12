@@ -41,7 +41,6 @@ Aplikasi web untuk katalog dan pemesanan paket tour, lengkap dengan manajemen ad
 2. Generate key:
    - `php artisan key:generate`
 3. Siapkan database.
-   - SQLite: buat file `database/database.sqlite`, pastikan `DB_CONNECTION=sqlite`.
    - MySQL: isi `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`.
 4. Install dependencies:
    - `composer install`
