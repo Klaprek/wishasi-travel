@@ -1,66 +1,128 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SISTEM PEMESANAN PAKET TOUR BERBASIS WEB
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi web untuk katalog dan pemesanan paket tour, lengkap dengan manajemen admin dan owner, pembayaran Midtrans, serta ulasan pelanggan.
 
-## About Laravel
+## Fitur Utama
+- Katalog paket tour dan halaman detail.
+- Pemesanan paket, pengisian data peserta, dan status pesanan.
+- Pembayaran via Midtrans (Snap dan Virtual Account).
+- Rating dan ulasan setelah pesanan selesai.
+- Admin: CRUD paket, tampilkan atau sembunyikan paket, verifikasi atau tolak pesanan.
+- Owner: rekapitulasi pesanan selesai dan rata rata rating.
+- Autentikasi login dan Google OAuth.
+- Role based access: customer, admin, owner.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Peran dan Alur Singkat
+- Customer: pilih paket -> pesan -> isi data peserta -> menunggu verifikasi -> bayar -> selesai -> beri rating.
+- Admin: kelola paket dan verifikasi atau tolak pesanan.
+- Owner: melihat rekapitulasi pendapatan dan rating.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Status Pesanan
+- `menunggu_verifikasi` - data peserta masuk, menunggu validasi admin.
+- `menunggu_pembayaran` - pesanan sudah diverifikasi, menunggu pembayaran.
+- `pembayaran_selesai` - pembayaran berhasil.
+- `pesanan_selesai` - perjalanan selesai dan dapat diberi rating.
+- `pesanan_ditolak` - pesanan ditolak (kuota penuh atau alasan admin).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Teknologi
+- Backend: Laravel 12, PHP 8.2, Laravel Socialite, Midtrans.
+- Frontend: React 18, Vite, Tailwind CSS.
+- Database: SQLite (default) atau MySQL.
+- Auth: Laravel session dan CSRF Sanctum.
 
-## Learning Laravel
+## Persyaratan
+- PHP 8.2, Composer
+- Node.js 18+ dan npm
+- Database MySQL
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Instalasi Lokal
+1. Salin env dan set konfigurasi.
+   - PowerShell: `Copy-Item .env.example .env`
+2. Generate key:
+   - `php artisan key:generate`
+3. Siapkan database.
+   - SQLite: buat file `database/database.sqlite`, pastikan `DB_CONNECTION=sqlite`.
+   - MySQL: isi `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`.
+4. Install dependencies:
+   - `composer install`
+   - `npm install`
+5. Migrasi dan seed:
+   - `php artisan migrate --seed`
+6. Buat symlink storage:
+   - `php artisan storage:link`
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Menjalankan Aplikasi
+- Semua sekaligus:
+  - `composer run dev`
+- Atau terpisah:
+  - `php artisan serve`
+  - `npm run dev`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Akses aplikasi di `APP_URL` (default `http://localhost`).
 
-## Laravel Sponsors
+## Akun Default (Seeder)
+- Admin: `admin@tour.com` / `admin123`
+- Owner: `owner@tour.com` / `owner123`
+- Customer: login via Google atau buat user baru dengan role `customer`.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Konfigurasi Penting (.env)
+- `APP_URL`
+- Database: `DB_CONNECTION` dan kredensial terkait
+- Midtrans:
+  - `MIDTRANS_SERVER_KEY`
+  - `MIDTRANS_CLIENT_KEY`
+  - `MIDTRANS_IS_PRODUCTION` (true atau false)
+- Google OAuth:
+  - `GOOGLE_CLIENT_ID`
+  - `GOOGLE_CLIENT_SECRET`
+  - `GOOGLE_REDIRECT_URI` (default `${APP_URL}/auth/google/callback`)
 
-### Premium Partners
+Jika key Midtrans belum diset, endpoint pembayaran akan mengembalikan pesan "Konfigurasi Midtrans belum disetel".
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## Rute Ringkas
+Public:
+- GET `/`, `/paket`, `/paket/{id}`
+- GET `/api/paket`, `/api/paket/{id}`, `/api/ratings`
 
-## Contributing
+Auth:
+- GET `/login` (UI)
+- POST `/login`, POST `/logout`
+- GET `/auth/google/redirect`, GET `/auth/google/callback`
+- GET `/api/me`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Customer (role: customer):
+- GET `/pesanan-saya`
+- POST `/pesan/{paketTour}`
+- POST `/pesanan/{pesanan}/peserta`
+- POST `/pesanan/{pesanan}/selesai`
+- POST `/pesanan/{pesanan}/rating`
+- POST `/payments/{pesanan}/snap-token`
+- POST `/payments/{pesanan}/confirm`
+- GET `/payments/{pesanan}/status`
 
-## Code of Conduct
+Admin (role: admin):
+- GET, POST, PUT, DELETE `/admin/paket`
+- PUT `/admin/paket/{paketTour}/hide`, PUT `/admin/paket/{paketTour}/show`
+- GET `/admin/pesanan`, `/admin/pesanan/{pesanan}`, `/admin/pesanan/{pesanan}/peserta`
+- PUT `/admin/pesanan/{pesanan}/verify`, PUT `/admin/pesanan/{pesanan}/reject`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Owner (role: owner):
+- GET `/owner/rekapitulasi?bulan=MM&tahun=YYYY`
 
-## Security Vulnerabilities
+## Struktur Direktori Utama
+- `app/Http/Controllers` - logika backend.
+- `app/Models` - model dan relasi.
+- `routes/web.php` - rute web dan api.
+- `resources/js` - SPA React.
+- `resources/views/app.blade.php` - entry point SPA.
+- `database/migrations` - skema database.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Testing
+- `php artisan test` atau `./vendor/bin/pest`
 
-## License
+## Docker (Opsional)
+Build dan jalankan:
+- `docker build -t tour-web .`
+- `docker run --rm -p 8080:8080 --env-file .env tour-web`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Aplikasi berjalan di `http://localhost:8080`.
