@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\pesanan;
+use App\Models\Pesanan;
 
-class peserta extends Model
+class Peserta extends Model
 {
     protected $table = 'peserta';
 
@@ -29,7 +29,7 @@ class peserta extends Model
 
     public function pesanan()
     {
-        return $this->belongsTo(pesanan::class);
+        return $this->belongsTo(Pesanan::class);
     }
 
     protected static function booted(): void
@@ -43,7 +43,7 @@ class peserta extends Model
 
     protected static function generateKode(self $peserta): ?string
     {
-        $pesanan = $peserta->pesanan ?? ($peserta->pesanan_id ? pesanan::find($peserta->pesanan_id) : null);
+        $pesanan = $peserta->pesanan ?? ($peserta->pesanan_id ? Pesanan::find($peserta->pesanan_id) : null);
         if (!$pesanan) {
             return null;
         }

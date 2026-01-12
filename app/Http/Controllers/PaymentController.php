@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\pesanan;
-use App\Models\pembayaran;
+use App\Models\Pesanan;
+use App\Models\Pembayaran;
 use Illuminate\Http\Request;
 use Midtrans\Config as MidtransConfig;
 use Midtrans\Snap;
@@ -52,7 +52,7 @@ class PaymentController extends Controller
      */
     protected function simpanDataPembayaran(string $midtransOrderId, array $data): void
     {
-        pembayaran::updateOrCreate(
+        Pembayaran::updateOrCreate(
             ['id_transaksi_midtrans' => $midtransOrderId],
             $data
         );
@@ -62,10 +62,10 @@ class PaymentController extends Controller
      * Membuat Snap token atau charge VA langsung untuk pesanan.
      *
      * @param Request $request
-     * @param pesanan $pesanan
+     * @param Pesanan $pesanan
      * @return \Illuminate\Http\JsonResponse
      */
-    public function createSnapToken(Request $request, pesanan $pesanan)
+    public function createSnapToken(Request $request, Pesanan $pesanan)
     {
         $user = $request->user();
 
@@ -183,10 +183,10 @@ class PaymentController extends Controller
      * Mengonfirmasi status pembayaran secara manual.
      *
      * @param Request $request
-     * @param pesanan $pesanan
+     * @param Pesanan $pesanan
      * @return \Illuminate\Http\JsonResponse
      */
-    public function confirm(Request $request, pesanan $pesanan)
+    public function confirm(Request $request, Pesanan $pesanan)
     {
         $user = $request->user();
 
@@ -216,10 +216,10 @@ class PaymentController extends Controller
      * Mengecek status transaksi ke Midtrans dan memperbarui pesanan.
      *
      * @param Request $request
-     * @param pesanan $pesanan
+     * @param Pesanan $pesanan
      * @return \Illuminate\Http\JsonResponse
      */
-    public function status(Request $request, pesanan $pesanan)
+    public function status(Request $request, Pesanan $pesanan)
     {
         $orderId = $request->input('order_id');
 
@@ -247,7 +247,7 @@ class PaymentController extends Controller
         }
 
         $statusPembayaran = $this->mapPembayaranStatus($transactionStatus);
-        $existingPembayaran = pembayaran::where('id_transaksi_midtrans', $orderId)->first();
+        $existingPembayaran = Pembayaran::where('id_transaksi_midtrans', $orderId)->first();
         $amountValue = $amount;
         if ($amountValue === null) {
             $pesanan->loadMissing('paketTour');

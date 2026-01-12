@@ -128,41 +128,43 @@ export default function HalamanDataPeserta() {
                     <div className="px-6 py-3 text-sm text-red-700 bg-red-50 border-b border-red-100">{errorMessage}</div>
                 )}
 
-                <table className="min-w-full divide-y divide-slate-200">
-                    <thead className="bg-slate-50 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                        <tr>
-                            <th className="px-6 py-3">ID</th>
-                            <th className="px-6 py-3">Nama</th>
-                            <th className="px-6 py-3">Telepon</th>
-                            <th className="px-6 py-3">Email</th>
-                            <th className="px-6 py-3">Alamat</th>
-                            <th className="px-6 py-3">Foto Identitas</th>
-                            <th className="px-6 py-3">Foto Paspor</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                        {pesertaList.map((p) => (
-                            <tr key={p.id} className="hover:bg-slate-50/80">
-                                <td className="px-6 py-4 text-sm font-semibold text-slate-900">#{p.kode ?? p.id}</td>
-                                <td className="px-6 py-4">
-                                    <p className="font-semibold text-slate-900">{p.nama_lengkap}</p>
-                                </td>
-                                <td className="px-6 py-4 text-sm text-slate-700">{p.telepon ?? '-'}</td>
-                                <td className="px-6 py-4 text-sm text-slate-700">{p.email ?? '-'}</td>
-                                <td className="px-6 py-4 text-sm text-slate-700">{p.alamat ?? '-'}</td>
-                                <td className="px-6 py-4">{renderDokumenLink('Lihat Foto', p.foto_identitas)}</td>
-                                <td className="px-6 py-4">{renderDokumenLink('Lihat Paspor', p.foto_paspor)}</td>
-                            </tr>
-                        ))}
-                        {pesertaList.length === 0 && (
+                <div className="w-full overflow-x-auto">
+                    <table className="w-full min-w-[960px] divide-y divide-slate-200">
+                        <thead className="bg-slate-50 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide">
                             <tr>
-                                <td className="px-6 py-6 text-center text-slate-500" colSpan={7}>
-                                    Tidak ada peserta pada pesanan ini.
-                                </td>
+                                <th className="px-6 py-3">ID</th>
+                                <th className="px-6 py-3">Nama</th>
+                                <th className="px-6 py-3">Telepon</th>
+                                <th className="px-6 py-3">Email</th>
+                                <th className="px-6 py-3">Alamat</th>
+                                <th className="px-6 py-3">Foto Identitas</th>
+                                <th className="px-6 py-3">Foto Paspor</th>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                            {pesertaList.map((p) => (
+                                <tr key={p.id} className="hover:bg-slate-50/80">
+                                    <td className="px-6 py-4 text-sm font-semibold text-slate-900">#{p.kode ?? p.id}</td>
+                                    <td className="px-6 py-4">
+                                        <p className="font-semibold text-slate-900">{p.nama_lengkap}</p>
+                                    </td>
+                                    <td className="px-6 py-4 text-sm text-slate-700">{p.telepon ?? '-'}</td>
+                                    <td className="px-6 py-4 text-sm text-slate-700">{p.email ?? '-'}</td>
+                                    <td className="px-6 py-4 text-sm text-slate-700">{p.alamat ?? '-'}</td>
+                                    <td className="px-6 py-4">{renderDokumenLink('Lihat Foto', p.foto_identitas)}</td>
+                                    <td className="px-6 py-4">{renderDokumenLink('Lihat Paspor', p.foto_paspor)}</td>
+                                </tr>
+                            ))}
+                            {pesertaList.length === 0 && (
+                                <tr>
+                                    <td className="px-6 py-6 text-center text-slate-500" colSpan={7}>
+                                        Tidak ada peserta pada pesanan ini.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

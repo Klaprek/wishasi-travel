@@ -140,6 +140,7 @@ export default function FormDataPaket() {
                         <label className="text-sm font-semibold text-slate-700">Nama Paket</label>
                         <input
                             className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
+                            placeholder="cth: Paket Bali 3D2N"
                             value={form.nama_paket}
                             onChange={(e) => updateField('nama_paket', e.target.value)}
                         />
@@ -149,6 +150,7 @@ export default function FormDataPaket() {
                         <input
                             type="number"
                             className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
+                            placeholder="cth: 1500000"
                             value={form.harga_per_peserta}
                             onChange={(e) => updateField('harga_per_peserta', e.target.value)}
                         />
@@ -158,6 +160,7 @@ export default function FormDataPaket() {
                         <input
                             type="number"
                             className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
+                            placeholder="cth: 25"
                             value={form.kuota}
                             onChange={(e) => updateField('kuota', e.target.value)}
                         />
@@ -168,7 +171,7 @@ export default function FormDataPaket() {
                             <div>
                                 <input
                                     type="number"
-                                    placeholder="Hari"
+                                    placeholder="Total Hari"
                                     className="w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
                                     value={form.lama_hari}
                                     onChange={(e) => updateField('lama_hari', e.target.value)}
@@ -177,7 +180,7 @@ export default function FormDataPaket() {
                             <div>
                                 <input
                                     type="number"
-                                    placeholder="Malam"
+                                    placeholder="Total Malam"
                                     className="w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
                                     value={form.lama_malam}
                                     onChange={(e) => updateField('lama_malam', e.target.value)}
@@ -219,6 +222,7 @@ export default function FormDataPaket() {
                         <textarea
                             rows={3}
                             className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
+                            placeholder="Pisahkan include dengan enter"
                             value={form.include}
                             onChange={(e) => updateField('include', e.target.value)}
                         />

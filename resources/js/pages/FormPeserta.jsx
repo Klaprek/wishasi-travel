@@ -112,6 +112,7 @@ const FormPeserta = () => {
                                 <input
                                     required
                                     className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
+                                    placeholder="cth: Budi Santoso"
                                     value={item.nama_lengkap}
                                     onChange={(e) => updateField(idx, 'nama_lengkap', e.target.value)}
                                 />
@@ -122,6 +123,7 @@ const FormPeserta = () => {
                                     type="email"
                                     required
                                     className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
+                                    placeholder="cth: budi@example.com"
                                     value={item.email}
                                     onChange={(e) => updateField(idx, 'email', e.target.value)}
                                 />
@@ -131,6 +133,7 @@ const FormPeserta = () => {
                                 <input
                                     required
                                     className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
+                                    placeholder="cth: 08123456789"
                                     value={item.telepon}
                                     onChange={(e) => updateField(idx, 'telepon', e.target.value)}
                                 />
@@ -140,6 +143,7 @@ const FormPeserta = () => {
                                 <input
                                     required
                                     className="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
+                                    placeholder="cth: Jl. Merdeka No. 10"
                                     value={item.alamat}
                                     onChange={(e) => updateField(idx, 'alamat', e.target.value)}
                                 />

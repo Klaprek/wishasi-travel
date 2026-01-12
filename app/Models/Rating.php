@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class rating extends Model
+class Rating extends Model
 {
     protected $table = 'rating';
 
@@ -20,16 +20,16 @@ class rating extends Model
 
     public function user()
     {
-        return $this->belongsTo(user::class);
+        return $this->belongsTo(User::class);
     }
 
     public function pesanan()
     {
-        return $this->belongsTo(pesanan::class);
+        return $this->belongsTo(Pesanan::class);
     }
 
     public function paketTour()
     {
-        return $this->belongsTo(pakettour::class, 'paket_id');
+        return $this->belongsTo(Pakettour::class, 'paket_id');
     }
 }

@@ -62,7 +62,7 @@ const HalamanKatalog = () => {
     const tampilHalamanKatalog = () => (
         <div className="space-y-16">
             <section
-                id="hero-section"
+                id="home"
                 className="relative -mx-4 sm:-mx-6 lg:-mx-8 overflow-hidden pt-0"
             >
                 <div className="absolute inset-0">
@@ -89,7 +89,7 @@ const HalamanKatalog = () => {
                 </div>
             </section>
 
-            <section id="paket-section" className="space-y-8">
+            <section id="katalog" className="space-y-8">
                 <div className="text-center space-y-3">
                     <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-8">
                         Katalog
@@ -317,7 +317,7 @@ const HalamanKatalog = () => {
                 )}
             </section>
 
-            <section id="rating-section" className="space-y-3">
+            <section id="rating" className="space-y-3">
                 <div className="grid lg:grid-cols-2 gap-6 items-stretch">
                     <div className="flex flex-col gap-4">
                         <div className="space-y-1">
@@ -472,7 +472,7 @@ const HalamanKatalog = () => {
             </section>
 
             <section
-                id="contact-section"
+                id="contact"
                 className="relative -mx-4 sm:-mx-6 lg:-mx-8 bg-[#1f0235] text-white"
             >
                 <div className="relative max-w-6xl mx-auto px-6 sm:px-10 py-12 sm:py-14">
@@ -505,7 +505,7 @@ const HalamanKatalog = () => {
                             <div className="space-y-1">
                                 <p className="text-lg font-semibold">Call Us</p>
                                 <a
-                                    href="tel:088742877304"
+                                    href="https://wa.me/088742877304"
                                     className="text-sm text-purple-100 hover:text-white transition"
                                 >
                                     0887 4287 7304
@@ -528,7 +528,7 @@ const HalamanKatalog = () => {
                             <p className="text-lg font-semibold">Follow Us</p>
                             <div className="flex items-center gap-4">
                                 <a
-                                    href="https://instagram.com/"
+                                    href="https://www.instagram.com/wishasi_travel"
                                     target="_blank"
                                     rel="noreferrer"
                                     className="h-11 w-11 rounded-full bg-purple-800 text-white flex items-center justify-center hover:bg-purple-700 transition"
@@ -548,7 +548,7 @@ const HalamanKatalog = () => {
                                     </svg>
                                 </a>
                                 <a
-                                    href="https://tiktok.com/"
+                                    href="https://www.tiktok.com/@wishasitourpku"
                                     target="_blank"
                                     rel="noreferrer"
                                     className="h-11 w-11 rounded-full bg-purple-800 text-white flex items-center justify-center hover:bg-purple-700 transition"
